@@ -60,7 +60,7 @@ class CreateAccountActivity : AppCompatActivity() {
                 }
                 else -> {
                     // Verifica se o email já está em uso
-                    db.collection("pessoa")
+                    db.collection("user")
                         .whereEqualTo("email", email)
                         .get()
                         .addOnSuccessListener { pessoas ->
@@ -133,7 +133,7 @@ class CreateAccountActivity : AppCompatActivity() {
 
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {
-            db.collection("pessoa").document(it.uid)
+            db.collection("user").document(it.uid)
                 .set(pessoaMap)
                 .addOnSuccessListener {
                     mensagemPositiva(binding.root, "Bem-vindo")

@@ -28,47 +28,26 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnTreinoA"
+        android:id="@+id/btnSantaFe"
         android:layout_width="300dp"
         android:layout_height="55dp"
         android:background="@drawable/borda"
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
-        android:text="treino a"
+        android:layout_marginTop="150dp"
+        android:text="santa fé"
         android:textSize="25dp"/>
 
     <Button
-        android:id="@+id/btnTreinoB"
+        android:id="@+id/btnForcaBruta"
         android:layout_width="300dp"
         android:layout_height="55dp"
         android:background="@drawable/borda"
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
-        android:text="treino b"
+        android:layout_marginTop="70dp"
+        android:text="Força bruta"
         android:textSize="25dp"/>
 
-    <Button
-        android:id="@+id/btnTreinoC"
-        android:layout_width="300dp"
-        android:layout_height="55dp"
-        android:background="@drawable/borda"
-        android:backgroundTint="@color/corPrincipal"
-        android:layout_gravity="center"
-        android:layout_marginTop="50dp"
-        android:text="treino c"
-        android:textSize="25dp"/>
-
-    <Button
-        android:id="@+id/btnHistorico"
-        android:layout_width="300dp"
-        android:layout_height="55dp"
-        android:background="@drawable/borda"
-        android:backgroundTint="@color/corPrincipal"
-        android:layout_gravity="center"
-        android:layout_marginTop="200dp"
-        android:text="historico de treinos"
-        android:textSize="17dp"/>
 
 </LinearLayout>

@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
                             val user = auth.currentUser
                             val userId = user?.uid
 
-                            val userDocRef = FirebaseFirestore.getInstance().collection("pessoa")
+                            val userDocRef = FirebaseFirestore.getInstance().collection("user")
                                 .document(userId!!)
                             userDocRef.get().addOnSuccessListener { documentSnapshot ->
                                 if (documentSnapshot.exists()) {

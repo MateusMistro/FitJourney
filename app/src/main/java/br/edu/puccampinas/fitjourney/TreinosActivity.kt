@@ -22,5 +22,26 @@ class TreinosActivity : AppCompatActivity() {
             startActivity(Intent(this,MenuActivity::class.java))
             finish()
         }
+
+        binding.btnTreinoA.setOnClickListener {
+            val intent = Intent(this, AcademiasActivity::class.java)
+            intent.putExtra("treino", "A")
+            startActivity(intent)
+            finish()
+        }
+
+        binding.btnTreinoB.setOnClickListener {
+            val intent = Intent(this, AcademiasActivity::class.java)
+            intent.putExtra("treino", "B")
+            startActivity(intent)
+            finish()
+        }
+
+        binding.btnTreinoC.setOnClickListener {
+            val intent = Intent(this, AcademiasActivity::class.java)
+            intent.putExtra("treino", "C")
+            startActivity(intent)
+            finish()
+        }
     }
 }
