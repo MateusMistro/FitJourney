@@ -33,7 +33,10 @@ class AcademiasActivity : AppCompatActivity() {
                     finish()
                 }
                 "B" -> {
-
+                    val intent = Intent(this,TreinoBActivity::class.java)
+                    intent.putExtra("academia","SF")
+                    startActivity(intent)
+                    finish()
                 }
                 "C" -> {
 
@@ -50,7 +53,10 @@ class AcademiasActivity : AppCompatActivity() {
                     finish()
                 }
                 "B" -> {
-
+                    val intent = Intent(this,TreinoBActivity::class.java)
+                    intent.putExtra("academia","FB")
+                    startActivity(intent)
+                    finish()
                 }
                 "C" -> {
 

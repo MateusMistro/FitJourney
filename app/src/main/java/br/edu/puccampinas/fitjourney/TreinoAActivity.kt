@@ -208,24 +208,48 @@ class TreinoAActivity : AppCompatActivity() {
                             val (existingPanturrilhaSentadoFirst, existingPanturrilhaSentadoSecond) = parseNumbers(existingPanturrilhaSentado)
                             val (existingPanturrilhaFirst, existingPanturrilhaSecond) = parseNumbers(existingPanturrilha)
 
+                            var novoExtensora = existingExtensora
+                            var novoHack = existingAgachamento
+                            var novoLeg = existingLegPress
+                            var novoMesa = existingMesaFlexora
+                            var novoCadeira = existingCadeiraFlexora
+                            var novoPanturrilhaSentado = existingPanturrilhaSentado
+                            var novoPanturrilha = existingPanturrilha
+
                             // Verifica se os novos valores são maiores ou iguais
-                            if (shouldUpdate(existingExtensoraFirst, existingExtensoraSecond, extensoraUnilateralFirst, extensoraUnilateralSecond) ||
-                                shouldUpdate(existingAgachamentoFirst, existingAgachamentoSecond, agachamentoHackFirst, agachamentoHackSecond) ||
-                                shouldUpdate(existingLegPressFirst, existingLegPressSecond, legPressFirst, legPressSecond) ||
-                                shouldUpdate(existingMesaFlexoraFirst, existingMesaFlexoraSecond, mesaFlexoraFirst, mesaFlexoraSecond) ||
-                                shouldUpdate(existingCadeiraFlexoraFirst, existingCadeiraFlexoraSecond, cadeiraFlexoraFirst, cadeiraFlexoraSecond) ||
-                                shouldUpdate(existingPanturrilhaSentadoFirst, existingPanturrilhaSentadoSecond, panturrilhaSentadoFirst, panturrilhaSentadoSecond) ||
-                                shouldUpdate(existingPanturrilhaFirst, existingPanturrilhaSecond, panturrilhaFirst, panturrilhaSecond)) {
+
+                            if(shouldUpdate(existingExtensoraFirst, existingExtensoraSecond, extensoraUnilateralFirst, extensoraUnilateralSecond)){
+                                novoExtensora = extensoraUnilateral
+                            }
+                            if(shouldUpdate(existingAgachamentoFirst, existingAgachamentoSecond, agachamentoHackFirst, agachamentoHackSecond)){
+                                novoHack = agachamentoHack
+                            }
+                            if(shouldUpdate(existingLegPressFirst, existingLegPressSecond, legPressFirst, legPressSecond)){
+                                novoLeg = legPress
+                            }
+                            if(shouldUpdate(existingMesaFlexoraFirst, existingMesaFlexoraSecond, mesaFlexoraFirst, mesaFlexoraSecond)){
+                                novoMesa = mesaFlexora
+                            }
+                            if(shouldUpdate(existingCadeiraFlexoraFirst, existingCadeiraFlexoraSecond, cadeiraFlexoraFirst, cadeiraFlexoraSecond)){
+                                novoCadeira = cadeiraFlexora
+                            }
+                            if(shouldUpdate(existingPanturrilhaSentadoFirst, existingPanturrilhaSentadoSecond, panturrilhaSentadoFirst, panturrilhaSentadoSecond) ){
+                                novoPanturrilhaSentado = panturrilhaSentado
+                            }
+                            if(shouldUpdate(existingPanturrilhaFirst, existingPanturrilhaSecond, panturrilhaFirst, panturrilhaSecond)){
+                                novoPanturrilha = panturrilha
+                            }
+
 
                                 // Cria o mapa de dados a ser salvo no Firestore
                                 val data = mapOf(
-                                    "ExtensoraUnilateral" to extensoraUnilateral,
-                                    "AgachamentoHack" to agachamentoHack,
-                                    "LegPress" to legPress,
-                                    "MesaFlexora" to mesaFlexora,
-                                    "CadeiraFlexora" to cadeiraFlexora,
-                                    "PanturrilhaSentado" to panturrilhaSentado,
-                                    panturrilhaField to panturrilha
+                                    "ExtensoraUnilateral" to novoExtensora,
+                                    "AgachamentoHack" to novoHack,
+                                    "LegPress" to novoLeg,
+                                    "MesaFlexora" to novoMesa,
+                                    "CadeiraFlexora" to novoCadeira,
+                                    "PanturrilhaSentado" to novoPanturrilhaSentado,
+                                    panturrilhaField to novoPanturrilha
                                 )
 
                                 // Atualiza o documento na coleção "WorkoutA"
@@ -238,9 +262,7 @@ class TreinoAActivity : AppCompatActivity() {
                                     .addOnFailureListener { exception ->
                                         mensagemNegativa(binding.root, "Erro ao atualizar dados: ${exception.message}")
                                     }
-                            } else {
-                                mensagemNegativa(binding.root, "Nenhum dado novo para atualizar.")
-                            }
+
                         }
                     } else {
                         mensagemNegativa(binding.root, "Nenhum documento encontrado para atualizar.")
@@ -270,7 +292,18 @@ class TreinoAActivity : AppCompatActivity() {
 
     // Função para comparar dois pares de números
     private fun shouldUpdate(existingFirst: Int, existingSecond: Int, newFirst: Int, newSecond: Int): Boolean {
-        return newFirst > existingFirst || (newFirst == existingFirst && newSecond > existingSecond)
+        // Se o primeiro número for maior, atualiza
+        if (newFirst > existingFirst) {
+            return true
+        }
+
+        // Se o primeiro número for igual e o segundo maior, atualiza
+        if (newFirst == existingFirst && newSecond > existingSecond) {
+            return true
+        }
+
+        // Se o primeiro número for menor, não atualiza nada
+        return false
     }
 
 

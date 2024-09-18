@@ -30,11 +30,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Treino A"
+        android:text="Treino B"
         android:textSize="30dp"
         android:textColor="@color/black"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="20dp"/>
 
     <EditText
         android:id="@+id/Exercice1"
@@ -42,7 +42,7 @@
         android:layout_height="50dp"
         android:hint="Carregando..."
         android:background="@drawable/borda"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
@@ -55,7 +55,7 @@
         android:layout_height="50dp"
         android:hint="Carregando..."
         android:background="@drawable/borda"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
@@ -68,7 +68,7 @@
         android:layout_height="50dp"
         android:hint="Carregando..."
         android:background="@drawable/borda"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
@@ -81,7 +81,7 @@
         android:layout_height="50dp"
         android:hint="Carregando..."
         android:background="@drawable/borda"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
@@ -94,7 +94,7 @@
         android:layout_height="50dp"
         android:hint="Carregando..."
         android:background="@drawable/borda"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
@@ -107,7 +107,7 @@
         android:layout_height="50dp"
         android:hint="Carregando..."
         android:background="@drawable/borda"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
@@ -120,7 +120,20 @@
         android:layout_height="50dp"
         android:hint="Carregando..."
         android:background="@drawable/borda"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:paddingLeft="15dp"
+        />
+
+    <EditText
+        android:id="@+id/Exercice8"
+        android:layout_width="350dp"
+        android:layout_height="50dp"
+        android:hint="Carregando..."
+        android:background="@drawable/borda"
+        android:layout_marginTop="15dp"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
@@ -134,7 +147,7 @@
         android:background="@drawable/borda"
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:text="Salvar"
         android:textSize="25dp"/>
 
