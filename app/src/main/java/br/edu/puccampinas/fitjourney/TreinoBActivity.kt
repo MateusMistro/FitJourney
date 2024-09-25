@@ -240,7 +240,6 @@ class TreinoBActivity : AppCompatActivity() {
                                     .document(document.id)
                                     .update(updatedData)
                                     .addOnSuccessListener {
-                                        mensagemPositiva(binding.root, "Dados atualizados com sucesso.")
                                     }
                                     .addOnFailureListener { exception ->
                                         mensagemNegativa(binding.root, "Erro ao atualizar dados: ${exception.message}")
@@ -249,52 +248,166 @@ class TreinoBActivity : AppCompatActivity() {
                         }
                     }
 
-                    // Atualiza também os documentos com "Academia" = "FB"
-                    db.collection("WorkoutB")
-                        .whereEqualTo("Academia", "FB")
-                        .get()
-                        .addOnSuccessListener { fbDocuments ->
-                            for (fbDocument in fbDocuments) {
-                                val (fbSupinoInclinadoFirst, fbSupinoInclinadoSecond) = parseNumbers(fbDocument.getString("SupinoInclinadoHalter") ?: "")
-                                val (fbSupinoRetoFirst, fbSupinoRetoSecond) = parseNumbers(fbDocument.getString("SupinoRetoBarra") ?: "")
-                                val (fbElevacaoLateralHalterFirst, fbElevacaoLateralHalterSecond) = parseNumbers(fbDocument.getString("ElevacaoLateralHalter") ?: "")
+                    if(academia == "SF") {
+                        // Atualiza também os documentos com "Academia" = "FB"
+                        db.collection("WorkoutB")
+                            .whereEqualTo("Academia", "FB")
+                            .get()
+                            .addOnSuccessListener { fbDocuments ->
+                                for (fbDocument in fbDocuments) {
+                                    val (fbSupinoInclinadoFirst, fbSupinoInclinadoSecond) = parseNumbers(
+                                        fbDocument.getString("SupinoInclinadoHalter") ?: ""
+                                    )
+                                    val (fbSupinoRetoFirst, fbSupinoRetoSecond) = parseNumbers(
+                                        fbDocument.getString("SupinoRetoBarra") ?: ""
+                                    )
+                                    val (fbElevacaoLateralHalterFirst, fbElevacaoLateralHalterSecond) = parseNumbers(
+                                        fbDocument.getString("ElevacaoLateralHalter") ?: ""
+                                    )
 
-                                // Inicializando variáveis para os novos valores
-                                var updatedSupinoInclinado = fbDocument.getString("SupinoInclinadoHalter") ?: ""
-                                var updatedSupinoReto = fbDocument.getString("SupinoRetoBarra") ?: ""
-                                var updatedElevacaoLateralHalter = fbDocument.getString("ElevacaoLateralHalter") ?: ""
+                                    // Inicializando variáveis para os novos valores
+                                    var updatedSupinoInclinado =
+                                        fbDocument.getString("SupinoInclinadoHalter") ?: ""
+                                    var updatedSupinoReto =
+                                        fbDocument.getString("SupinoRetoBarra") ?: ""
+                                    var updatedElevacaoLateralHalter =
+                                        fbDocument.getString("ElevacaoLateralHalter") ?: ""
 
 
-                                // Verifica se deve atualizar também para academia FB
-                                if (shouldUpdate(fbSupinoInclinadoFirst, fbSupinoInclinadoSecond, supinoInclinadoHalterFirst, supinoInclinadoHalterSecond)) {
-                                    updatedSupinoInclinado = supinoInclinadoHalter
-                                }
-                                if (shouldUpdate(fbSupinoRetoFirst, fbSupinoRetoSecond, supinoRetoBarraFirst, supinoRetoBarraSecond)) {
-                                    updatedSupinoReto = supinoRetoBarra
-                                }
-                                if (shouldUpdate(fbElevacaoLateralHalterFirst, fbElevacaoLateralHalterSecond, elevacaoLateralHalterFirst, elevacaoLateralHalterSecond)) {
-                                    updatedElevacaoLateralHalter = elevacaoLateralHalter
-                                }
-                                val updatedData = mapOf(
-                                    "SupinoInclinadoHalter" to updatedSupinoInclinado,
-                                    "SupinoRetoBarra" to updatedSupinoReto,
-                                    "ElevacaoLateralHalter" to updatedElevacaoLateralHalter
-                                )
+                                    // Verifica se deve atualizar também para academia FB
+                                    if (shouldUpdate(
+                                            fbSupinoInclinadoFirst,
+                                            fbSupinoInclinadoSecond,
+                                            supinoInclinadoHalterFirst,
+                                            supinoInclinadoHalterSecond
+                                        )
+                                    ) {
+                                        updatedSupinoInclinado = supinoInclinadoHalter
+                                    }
+                                    if (shouldUpdate(
+                                            fbSupinoRetoFirst,
+                                            fbSupinoRetoSecond,
+                                            supinoRetoBarraFirst,
+                                            supinoRetoBarraSecond
+                                        )
+                                    ) {
+                                        updatedSupinoReto = supinoRetoBarra
+                                    }
+                                    if (shouldUpdate(
+                                            fbElevacaoLateralHalterFirst,
+                                            fbElevacaoLateralHalterSecond,
+                                            elevacaoLateralHalterFirst,
+                                            elevacaoLateralHalterSecond
+                                        )
+                                    ) {
+                                        updatedElevacaoLateralHalter = elevacaoLateralHalter
+                                    }
+                                    val updatedData = mapOf(
+                                        "SupinoInclinadoHalter" to updatedSupinoInclinado,
+                                        "SupinoRetoBarra" to updatedSupinoReto,
+                                        "ElevacaoLateralHalter" to updatedElevacaoLateralHalter
+                                    )
 
-                                db.collection("WorkoutB")
+                                    db.collection("WorkoutB")
                                         .document(fbDocument.id)
                                         .update(updatedData)
                                         .addOnSuccessListener {
                                         }
                                         .addOnFailureListener { exception ->
-                                            mensagemNegativa(binding.root, "Erro ao atualizar dados da academia FB: ${exception.message}")
+                                            mensagemNegativa(
+                                                binding.root,
+                                                "Erro ao atualizar dados da academia FB: ${exception.message}"
+                                            )
                                         }
                                 }
 
-                        }
-                        .addOnFailureListener { exception ->
-                            mensagemNegativa(binding.root, "Erro ao buscar documentos da academia FB: ${exception.message}")
-                        }
+                            }
+                            .addOnFailureListener { exception ->
+                                mensagemNegativa(
+                                    binding.root,
+                                    "Erro ao buscar documentos da academia FB: ${exception.message}"
+                                )
+                            }
+                    }else if(academia == "FB") {
+                        db.collection("WorkoutB")
+                            .whereEqualTo("Academia", "SF")
+                            .get()
+                            .addOnSuccessListener { fbDocuments ->
+                                for (fbDocument in fbDocuments) {
+                                    val (fbSupinoInclinadoFirst, fbSupinoInclinadoSecond) = parseNumbers(
+                                        fbDocument.getString("SupinoInclinadoHalter") ?: ""
+                                    )
+                                    val (fbSupinoRetoFirst, fbSupinoRetoSecond) = parseNumbers(
+                                        fbDocument.getString("SupinoRetoBarra") ?: ""
+                                    )
+                                    val (fbElevacaoLateralHalterFirst, fbElevacaoLateralHalterSecond) = parseNumbers(
+                                        fbDocument.getString("ElevacaoLateralHalter") ?: ""
+                                    )
+
+                                    // Inicializando variáveis para os novos valores
+                                    var updatedSupinoInclinado =
+                                        fbDocument.getString("SupinoInclinadoHalter") ?: ""
+                                    var updatedSupinoReto =
+                                        fbDocument.getString("SupinoRetoBarra") ?: ""
+                                    var updatedElevacaoLateralHalter =
+                                        fbDocument.getString("ElevacaoLateralHalter") ?: ""
+
+
+                                    // Verifica se deve atualizar também para academia FB
+                                    if (shouldUpdate(
+                                            fbSupinoInclinadoFirst,
+                                            fbSupinoInclinadoSecond,
+                                            supinoInclinadoHalterFirst,
+                                            supinoInclinadoHalterSecond
+                                        )
+                                    ) {
+                                        updatedSupinoInclinado = supinoInclinadoHalter
+                                    }
+                                    if (shouldUpdate(
+                                            fbSupinoRetoFirst,
+                                            fbSupinoRetoSecond,
+                                            supinoRetoBarraFirst,
+                                            supinoRetoBarraSecond
+                                        )
+                                    ) {
+                                        updatedSupinoReto = supinoRetoBarra
+                                    }
+                                    if (shouldUpdate(
+                                            fbElevacaoLateralHalterFirst,
+                                            fbElevacaoLateralHalterSecond,
+                                            elevacaoLateralHalterFirst,
+                                            elevacaoLateralHalterSecond
+                                        )
+                                    ) {
+                                        updatedElevacaoLateralHalter = elevacaoLateralHalter
+                                    }
+                                    val updatedData = mapOf(
+                                        "SupinoInclinadoHalter" to updatedSupinoInclinado,
+                                        "SupinoRetoBarra" to updatedSupinoReto,
+                                        "ElevacaoLateralHalter" to updatedElevacaoLateralHalter
+                                    )
+
+                                    db.collection("WorkoutB")
+                                        .document(fbDocument.id)
+                                        .update(updatedData)
+                                        .addOnSuccessListener {
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            mensagemNegativa(
+                                                binding.root,
+                                                "Erro ao atualizar dados da academia FB: ${exception.message}"
+                                            )
+                                        }
+                                }
+
+                            }
+                            .addOnFailureListener { exception ->
+                                mensagemNegativa(
+                                    binding.root,
+                                    "Erro ao buscar documentos da academia FB: ${exception.message}"
+                                )
+                            }
+                    }
                 }
                 .addOnFailureListener { exception ->
                     mensagemNegativa(binding.root, "Erro ao consultar documentos: ${exception.message}")
