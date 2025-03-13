@@ -43,5 +43,12 @@ class TreinosActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        binding.btnTreinoD.setOnClickListener {
+            val intent = Intent(this, AcademiasActivity::class.java)
+            intent.putExtra("treino", "D")
+            startActivity(intent)
+            finish()
+        }
     }
 }

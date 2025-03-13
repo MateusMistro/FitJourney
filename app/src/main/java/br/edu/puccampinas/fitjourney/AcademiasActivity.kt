@@ -44,6 +44,12 @@ class AcademiasActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 }
+                "D" -> {
+                    val intent = Intent(this,TreinoDActivity::class.java)
+                    intent.putExtra("academia","SF")
+                    startActivity(intent)
+                    finish()
+                }
             }
         }
 
@@ -63,6 +69,12 @@ class AcademiasActivity : AppCompatActivity() {
                 }
                 "C" -> {
                     val intent = Intent(this,TreinoCActivity::class.java)
+                    intent.putExtra("academia","FB")
+                    startActivity(intent)
+                    finish()
+                }
+                "D" -> {
+                    val intent = Intent(this,TreinoDActivity::class.java)
                     intent.putExtra("academia","FB")
                     startActivity(intent)
                     finish()
