@@ -230,9 +230,142 @@ class TreinoDActivity : AppCompatActivity() {
                                 }
 
                         }
-                    } else {
-                        mensagemNegativa(binding.root, "Nenhum documento encontrado para atualizar.")
                     }
+
+                    if(academia == "SF") {
+                        // Atualiza também os documentos com "Academia" = "FB"
+                        db.collection("WorkoutD")
+                            .whereEqualTo("Academia", "FB")
+                            .get()
+                            .addOnSuccessListener { fbDocuments ->
+                                for (fbDocument in fbDocuments) {
+                                    val (fbBicepsInclinadoFirst, fbBicepsInclinadoSecond) = parseNumbers(
+                                        fbDocument.getString("BicepsInclinado") ?: ""
+                                    )
+                                    val (fbRoscaMarteloFirst, fbRoscaMarteloSecond) = parseNumbers(
+                                        fbDocument.getString("RoscaMartelo") ?: ""
+                                    )
+
+                                    // Inicializando variáveis para os novos valores
+                                    var updatedBicepsInclinado =
+                                        fbDocument.getString("BicepsInclinado") ?: ""
+                                    var updatedRoscaMartelo =
+                                        fbDocument.getString("RoscaMartelo") ?: ""
+
+
+                                    // Verifica se deve atualizar também para academia FB
+                                    if (shouldUpdate(
+                                            fbBicepsInclinadoFirst,
+                                            fbBicepsInclinadoSecond,
+                                            BicepsInclinadoFirst,
+                                            BicepsInclinadoSecond
+                                        )
+                                    ) {
+                                        updatedBicepsInclinado = BicepsInclinado
+                                    }
+                                    if (shouldUpdate(
+                                            fbRoscaMarteloFirst,
+                                            fbRoscaMarteloSecond,
+                                            RoscaMarteloFirst,
+                                            RoscaMarteloSecond
+                                        )
+                                    ) {
+                                        updatedRoscaMartelo = RoscaMartelo
+                                    }
+
+                                    val updatedData = mapOf(
+                                        "BicepsInclinado" to updatedBicepsInclinado,
+                                        "RoscaMartelo" to updatedRoscaMartelo
+                                    )
+
+                                    db.collection("WorkoutD")
+                                        .document(fbDocument.id)
+                                        .update(updatedData)
+                                        .addOnSuccessListener {
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            mensagemNegativa(
+                                                binding.root,
+                                                "Erro ao atualizar dados da academia FB: ${exception.message}"
+                                            )
+                                        }
+                                }
+
+                            }
+                            .addOnFailureListener { exception ->
+                                mensagemNegativa(
+                                    binding.root,
+                                    "Erro ao buscar documentos da academia FB: ${exception.message}"
+                                )
+                            }
+                    }else if(academia == "FB") {
+                        db.collection("WorkoutD")
+                            .whereEqualTo("Academia", "SF")
+                            .get()
+                            .addOnSuccessListener { fbDocuments ->
+                                for (fbDocument in fbDocuments) {
+                                    val (fbBicepsInclinadoFirst, fbBicepsInclinadoSecond) = parseNumbers(
+                                        fbDocument.getString("BicepsInclinado") ?: ""
+                                    )
+                                    val (fbRoscaMarteloFirst, fbRoscaMarteloSecond) = parseNumbers(
+                                        fbDocument.getString("RoscaMartelo") ?: ""
+                                    )
+
+                                    // Inicializando variáveis para os novos valores
+                                    var updatedBicepsInclinado =
+                                        fbDocument.getString("BicepsInclinado") ?: ""
+                                    var updatedRoscaMartelo =
+                                        fbDocument.getString("RoscaMartelo") ?: ""
+
+
+                                    // Verifica se deve atualizar também para academia FB
+                                    if (shouldUpdate(
+                                            fbBicepsInclinadoFirst,
+                                            fbBicepsInclinadoSecond,
+                                            BicepsInclinadoFirst,
+                                            BicepsInclinadoSecond
+                                        )
+                                    ) {
+                                        updatedBicepsInclinado = BicepsInclinado
+                                    }
+                                    if (shouldUpdate(
+                                            fbRoscaMarteloFirst,
+                                            fbRoscaMarteloSecond,
+                                            RoscaMarteloFirst,
+                                            RoscaMarteloSecond
+                                        )
+                                    ) {
+                                        updatedRoscaMartelo = RoscaMartelo
+                                    }
+
+                                    val updatedData = mapOf(
+                                        "BicepsInclinado" to updatedBicepsInclinado,
+                                        "RoscaMartelo" to updatedRoscaMartelo
+                                    )
+
+                                    db.collection("WorkoutD")
+                                        .document(fbDocument.id)
+                                        .update(updatedData)
+                                        .addOnSuccessListener {
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            mensagemNegativa(
+                                                binding.root,
+                                                "Erro ao atualizar dados da academia FB: ${exception.message}"
+                                            )
+                                        }
+                                }
+
+
+                            }
+                            .addOnFailureListener { exception ->
+                                mensagemNegativa(
+                                    binding.root,
+                                    "Erro ao buscar documentos da academia FB: ${exception.message}"
+                                )
+                            }
+                    }
+
                 }
                 .addOnFailureListener { exception ->
                     mensagemNegativa(binding.root, "Erro ao consultar documentos: ${exception.message}")

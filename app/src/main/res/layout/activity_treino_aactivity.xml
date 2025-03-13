@@ -114,18 +114,6 @@
         android:paddingLeft="15dp"
         />
 
-    <EditText
-        android:id="@+id/Exercice7"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:hint="Carregando..."
-        android:background="@drawable/borda"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center"
-        android:textColorHint="@color/black"
-        android:textColor="@color/black"
-        android:paddingLeft="15dp"
-        />
 
     <Button
         android:id="@+id/btnSave"
@@ -134,7 +122,7 @@
         android:background="@drawable/borda"
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:text="Salvar"
         android:textSize="25dp"/>
 

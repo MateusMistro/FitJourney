@@ -69,6 +69,400 @@ class TreinoAActivity : AppCompatActivity() {
 
         for (document in documents) {
 
+            val field1 = document.getString("Graviton") ?: ""
+            val field2 = document.getString("PuxadaAberta") ?: ""
+            val field3 = document.getString("RemadaCurvada") ?: ""
+            val field4 = document.getString("RemadaSerrote") ?: ""
+            val field5 = document.getString("RemadaTriangulo") ?: ""
+            val field6 = document.getString("Pulldown") ?: ""
+
+            binding.Exercice1.hint = "Graviton: $field1"
+            binding.Exercice2.hint = "Puxada Aberta: $field2"
+            binding.Exercice3.hint = "Remada Curvada: $field3"
+            binding.Exercice4.hint = "Remada Serrote: $field4"
+            binding.Exercice5.hint = "Remada Triangulo: $field5"
+            binding.Exercice6.hint = "Pulldown: $field6"
+
+        }
+    }
+
+    private fun saveData() {
+        // Obtém o valor da variável 'academia' da Intent
+        val academia = intent.getStringExtra("academia") ?: ""
+
+        // Obtém os valores dos campos e faz o trim para remover espaços extras
+        val Graviton = binding.Exercice1.text.toString().trim()
+        val PuxadaAberta = binding.Exercice2.text.toString().trim()
+        val RemadaCurvada = binding.Exercice3.text.toString().trim()
+        val RemadaSerrote = binding.Exercice4.text.toString().trim()
+        val RemadaTriangulo = binding.Exercice5.text.toString().trim()
+        val Pulldown = binding.Exercice6.text.toString().trim()
+
+        // Verifica se todos os campos estão preenchidos
+        if (Graviton.isEmpty() ||
+            PuxadaAberta.isEmpty() ||
+            RemadaCurvada.isEmpty() ||
+            RemadaSerrote.isEmpty() ||
+            RemadaTriangulo.isEmpty() ||
+            Pulldown.isEmpty()) {
+
+            // Exibe uma mensagem de erro se algum campo estiver vazio
+            mensagemNegativa(binding.root, "Por favor, preencha todos os campos.")
+            return
+        }
+
+        // Converte os valores dos campos para números (partindo do pressuposto que estão no formato "número/número")
+        val (GravitonFirst, GravitonSecond) = parseNumbers(Graviton)
+        val (PuxadaAbertaFirst, PuxadaAbertaSecond) = parseNumbers(PuxadaAberta)
+        val (RemadaCurvadaFirst, RemadaCurvadaSecond) = parseNumbers(RemadaCurvada)
+        val (RemadaSerroteFirst, RemadaSerroteSecond) = parseNumbers(RemadaSerrote)
+        val (RemadaTrianguloFirst, RemadaTrianguloSecond) = parseNumbers(RemadaTriangulo)
+        val (PulldownFirst, PulldownSecond) = parseNumbers(Pulldown)
+
+        // Obtém o ID do usuário autenticado
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+
+        if (userId != null) {
+            // Cria o mapa de dados a ser salvo no Firestore
+            val data = mapOf(
+                "Treino" to "Treino A",
+                "Academia" to academia,
+                "Graviton" to Graviton,
+                "PuxadaAberta" to PuxadaAberta,
+                "RemadaCurvada" to RemadaCurvada,
+                "RemadaSerrote" to RemadaSerrote,
+                "RemadaTriangulo" to RemadaTriangulo,
+                "Pulldown" to Pulldown,
+                "UserId" to userId,
+                "Data" to Date()
+            )
+
+            // Adiciona o documento à coleção "Treinos"
+            db.collection("Workouts")
+                .add(data)
+                .addOnSuccessListener {
+                    mensagemPositiva(binding.root, "Dados salvos com sucesso.")
+                }
+                .addOnFailureListener { exception ->
+                    mensagemNegativa(binding.root, "Erro ao salvar dados: ${exception.message}")
+                }
+        } else {
+            mensagemNegativa(binding.root, "Usuário não está autenticado.")
+        }
+
+
+        if (userId != null) {
+            // Consulta a coleção "WorkoutA" com base no "UserId" e "Academia"
+            db.collection("WorkoutA")
+                .whereEqualTo("UserId", userId)
+                .whereEqualTo("Academia", academia)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        for (document in documents) {
+
+                            // Obtém os dados existentes do documento
+                            val existingGraviton = document.getString("Graviton") ?: ""
+                            val existingPuxadaAberta = document.getString("PuxadaAberta") ?: ""
+                            val existingRemadaCurvada = document.getString("RemadaCurvada") ?: ""
+                            val existingRemadaSerrote = document.getString("RemadaSerrote") ?: ""
+                            val existingRemadaTriangulo = document.getString("RemadaTriangulo") ?: ""
+                            val existingPulldown = document.getString("Pulldown") ?: ""
+
+                            // Converte os dados existentes para números
+                            val (existingGravitonFirst, existingGravitonSecond) = parseNumbers(existingGraviton)
+                            val (existingPuxadaAbertaFirst, existingPuxadaAbertaSecond) = parseNumbers(existingPuxadaAberta)
+                            val (existingRemadaCurvadaFirst, existingRemadaCurvadaSecond) = parseNumbers(existingRemadaCurvada)
+                            val (existingRemadaSerroteFirst, existingRemadaSerroteSecond) = parseNumbers(existingRemadaSerrote)
+                            val (existingRemadaTrianguloFirst, existingRemadaTrianguloSecond) = parseNumbers(existingRemadaTriangulo)
+                            val (existingPulldownFirst, existingPulldownSecond) = parseNumbers(existingPulldown)
+
+                            var novoGraviton = existingGraviton
+                            var novoPuxadaAberta = existingPuxadaAberta
+                            var novoRemadaCurvada = existingRemadaCurvada
+                            var novoRemadaSerrote = existingRemadaSerrote
+                            var novoRemadaTriangulo= existingRemadaTriangulo
+                            var novoPulldown = existingPulldown
+
+                            // Verifica se os novos valores são maiores ou iguais
+
+                            if(shouldUpdate(existingGravitonFirst, existingGravitonSecond, GravitonFirst, GravitonSecond)){
+                                novoGraviton = Graviton
+                            }
+                            if(shouldUpdate(existingPuxadaAbertaFirst, existingPuxadaAbertaSecond, PuxadaAbertaFirst, PuxadaAbertaSecond)){
+                                novoPuxadaAberta = PuxadaAberta
+                            }
+                            if(shouldUpdate(existingRemadaCurvadaFirst, existingRemadaCurvadaSecond, RemadaCurvadaFirst, RemadaCurvadaSecond)){
+                                novoRemadaCurvada = RemadaCurvada
+                            }
+                            if(shouldUpdate(existingRemadaSerroteFirst, existingRemadaSerroteSecond, RemadaSerroteFirst, RemadaSerroteSecond)){
+                                novoRemadaSerrote = RemadaSerrote
+                            }
+                            if(shouldUpdate(existingRemadaTrianguloFirst, existingRemadaTrianguloSecond, RemadaTrianguloFirst, RemadaTrianguloSecond)){
+                                novoRemadaTriangulo = RemadaTriangulo
+                            }
+                            if(shouldUpdate(existingPulldownFirst, existingPulldownSecond, PulldownFirst, PulldownSecond) ){
+                                novoPulldown = Pulldown
+                            }
+
+
+
+                                // Cria o mapa de dados a ser salvo no Firestore
+                                val data = mapOf(
+                                    "Graviton" to novoGraviton,
+                                    "PuxadaAberta" to novoPuxadaAberta,
+                                    "RemadaCurvada" to novoRemadaCurvada,
+                                    "RemadaSerrote" to novoRemadaSerrote,
+                                    "RemadaTriangulo" to novoRemadaTriangulo,
+                                    "Pulldown" to novoPulldown,
+                                )
+
+                                // Atualiza o documento na coleção "WorkoutA"
+                                db.collection("WorkoutA")
+                                    .document(document.id)
+                                    .update(data)
+                                    .addOnSuccessListener {
+                                        mensagemPositiva(binding.root, "Dados atualizados com sucesso.")
+                                    }
+                                    .addOnFailureListener { exception ->
+                                        mensagemNegativa(binding.root, "Erro ao atualizar dados: ${exception.message}")
+                                    }
+
+                        }
+                    }
+
+                    if(academia == "SF") {
+                        // Atualiza também os documentos com "Academia" = "FB"
+                        db.collection("WorkoutA")
+                            .whereEqualTo("Academia", "FB")
+                            .get()
+                            .addOnSuccessListener { fbDocuments ->
+                                for (fbDocument in fbDocuments) {
+                                    val (fbRemadaSerroteFirst, fbRemadaSerroteSecond) = parseNumbers(
+                                        fbDocument.getString("RemadaSerrote") ?: ""
+                                    )
+
+                                    // Inicializando variáveis para os novos valores
+                                    var updatedfbRemadaSerrote =
+                                        fbDocument.getString("fbRemadaSerrote") ?: ""
+
+                                    // Verifica se deve atualizar também para academia FB
+                                    if (shouldUpdate(
+                                            fbRemadaSerroteFirst,
+                                            fbRemadaSerroteSecond,
+                                            RemadaSerroteFirst,
+                                            RemadaSerroteSecond
+                                        )
+                                    ) {
+                                        updatedfbRemadaSerrote = RemadaSerrote
+                                    }
+
+                                    val updatedData = mapOf(
+                                        "RemadaSerrote" to updatedfbRemadaSerrote
+                                    )
+
+                                    db.collection("WorkoutA")
+                                        .document(fbDocument.id)
+                                        .update(updatedData)
+                                        .addOnSuccessListener {
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            mensagemNegativa(
+                                                binding.root,
+                                                "Erro ao atualizar dados da academia FB: ${exception.message}"
+                                            )
+                                        }
+                                }
+
+                            }
+                            .addOnFailureListener { exception ->
+                                mensagemNegativa(
+                                    binding.root,
+                                    "Erro ao buscar documentos da academia FB: ${exception.message}"
+                                )
+                            }
+                    }else if(academia == "FB") {
+                        db.collection("WorkoutD")
+                            .whereEqualTo("Academia", "SF")
+                            .get()
+                            .addOnSuccessListener { fbDocuments ->
+                                for (fbDocument in fbDocuments) {
+                                    val (fbRemadaSerroteFirst, fbRemadaSerroteSecond) = parseNumbers(
+                                        fbDocument.getString("RemadaSerrote") ?: ""
+                                    )
+
+                                    // Inicializando variáveis para os novos valores
+                                    var updatedfbRemadaSerrote =
+                                        fbDocument.getString("fbRemadaSerrote") ?: ""
+
+                                    // Verifica se deve atualizar também para academia FB
+                                    if (shouldUpdate(
+                                            fbRemadaSerroteFirst,
+                                            fbRemadaSerroteSecond,
+                                            RemadaSerroteFirst,
+                                            RemadaSerroteSecond
+                                        )
+                                    ) {
+                                        updatedfbRemadaSerrote = RemadaSerrote
+                                    }
+
+                                    val updatedData = mapOf(
+                                        "RemadaSerrote" to updatedfbRemadaSerrote
+                                    )
+
+                                    db.collection("WorkoutA")
+                                        .document(fbDocument.id)
+                                        .update(updatedData)
+                                        .addOnSuccessListener {
+                                        }
+                                        .addOnFailureListener { exception ->
+                                            mensagemNegativa(
+                                                binding.root,
+                                                "Erro ao atualizar dados da academia FB: ${exception.message}"
+                                            )
+                                        }
+                                }
+
+                            }
+                            .addOnFailureListener { exception ->
+                                mensagemNegativa(
+                                    binding.root,
+                                    "Erro ao buscar documentos da academia FB: ${exception.message}"
+                                )
+                            }
+                    }
+
+                }
+                .addOnFailureListener { exception ->
+                    mensagemNegativa(binding.root, "Erro ao consultar documentos: ${exception.message}")
+                }
+        } else {
+            mensagemNegativa(binding.root, "Usuário não está autenticado.")
+        }
+    }
+
+    // Função para converter a string do formato "número/número" para dois inteiros
+    private fun parseNumbers(value: String): Pair<Int, Int> {
+        val parts = value.split("/")
+        return if (parts.size == 2) {
+            try {
+                Pair(parts[0].toInt(), parts[1].toInt())
+            } catch (e: NumberFormatException) {
+                Pair(0, 0) // Retorna 0, 0 em caso de erro de conversão
+            }
+        } else {
+            Pair(0, 0) // Retorna 0, 0 se o formato estiver incorreto
+        }
+    }
+
+    // Função para comparar dois pares de números
+    private fun shouldUpdate(existingFirst: Int, existingSecond: Int, newFirst: Int, newSecond: Int): Boolean {
+        // Se o primeiro número for maior, atualiza
+        if (newFirst > existingFirst) {
+            return true
+        }
+
+        // Se o primeiro número for igual e o segundo maior, atualiza
+        if (newFirst == existingFirst && newSecond > existingSecond) {
+            return true
+        }
+
+        // Se o primeiro número for menor, não atualiza nada
+        return false
+    }
+
+
+    private fun mensagemNegativa(view: View, mensagem: String) {
+        val snackbar = Snackbar.make(view, mensagem, Snackbar.LENGTH_LONG)
+        snackbar.setBackgroundTint(Color.parseColor("#F3787A"))
+        snackbar.setTextColor(Color.parseColor("#FFFFFF"))
+        snackbar.show()
+    }
+
+    private fun mensagemPositiva(view: View, mensagem: String) {
+        val snackbar = Snackbar.make(view, mensagem, Snackbar.LENGTH_LONG)
+        snackbar.setBackgroundTint(Color.parseColor("#78F37A"))
+        snackbar.setTextColor(Color.parseColor("#FFFFFF"))
+        snackbar.show()
+    }
+}
+
+
+
+/* TREINO ANTIGO
+
+package br.edu.puccampinas.fitjourney
+
+import android.content.Intent
+import android.graphics.Color
+import android.os.Bundle
+import android.view.View
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import br.edu.puccampinas.fitjourney.databinding.ActivityTreinoAactivityBinding
+import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import java.util.Date
+
+private lateinit var binding: ActivityTreinoAactivityBinding
+private lateinit var auth: FirebaseAuth
+private lateinit var db: FirebaseFirestore
+
+class TreinoAActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        binding = ActivityTreinoAactivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.btnVoltar.setOnClickListener {
+            startActivity(Intent(this,AcademiasActivity::class.java))
+            finish()
+        }
+
+        val academia = intent.getStringExtra("academia")
+
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
+        // Obtém o ID do usuário conectado
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+
+        if (userId != null) {
+            // Consulta a coleção "workoutA" onde o campo "UserId" é igual ao ID do usuário conectado
+            db.collection("WorkoutA")
+                .whereEqualTo("UserId", userId)
+                .whereEqualTo("Academia", academia)
+                .get()
+                .addOnSuccessListener { documents ->
+                    if (!documents.isEmpty) {
+                        setEditTextHints(documents)
+                    } else {
+                        mensagemNegativa(binding.root, userId)
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    mensagemNegativa(binding.root, "Erro ao consultar documentos: ${exception.message}")
+                }
+        } else {
+            mensagemNegativa(binding.root, "Usuário não está autenticado.")
+        }
+
+        binding.btnSave.setOnClickListener {
+            saveData()
+        }
+    }
+
+    private fun setEditTextHints(documents: QuerySnapshot) {
+
+        val academia = intent.getStringExtra("academia")
+
+        for (document in documents) {
+
             val field1 = document.getString("ExtensoraUnilateral") ?: ""
             val field2 = document.getString("AgachamentoHack") ?: ""
             val field3 = document.getString("LegPress") ?: ""
@@ -241,27 +635,27 @@ class TreinoAActivity : AppCompatActivity() {
                             }
 
 
-                                // Cria o mapa de dados a ser salvo no Firestore
-                                val data = mapOf(
-                                    "ExtensoraUnilateral" to novoExtensora,
-                                    "AgachamentoHack" to novoHack,
-                                    "LegPress" to novoLeg,
-                                    "MesaFlexora" to novoMesa,
-                                    "CadeiraFlexora" to novoCadeira,
-                                    "PanturrilhaSentado" to novoPanturrilhaSentado,
-                                    panturrilhaField to novoPanturrilha
-                                )
+                            // Cria o mapa de dados a ser salvo no Firestore
+                            val data = mapOf(
+                                "ExtensoraUnilateral" to novoExtensora,
+                                "AgachamentoHack" to novoHack,
+                                "LegPress" to novoLeg,
+                                "MesaFlexora" to novoMesa,
+                                "CadeiraFlexora" to novoCadeira,
+                                "PanturrilhaSentado" to novoPanturrilhaSentado,
+                                panturrilhaField to novoPanturrilha
+                            )
 
-                                // Atualiza o documento na coleção "WorkoutA"
-                                db.collection("WorkoutA")
-                                    .document(document.id)
-                                    .update(data)
-                                    .addOnSuccessListener {
-                                        mensagemPositiva(binding.root, "Dados atualizados com sucesso.")
-                                    }
-                                    .addOnFailureListener { exception ->
-                                        mensagemNegativa(binding.root, "Erro ao atualizar dados: ${exception.message}")
-                                    }
+                            // Atualiza o documento na coleção "WorkoutA"
+                            db.collection("WorkoutA")
+                                .document(document.id)
+                                .update(data)
+                                .addOnSuccessListener {
+                                    mensagemPositiva(binding.root, "Dados atualizados com sucesso.")
+                                }
+                                .addOnFailureListener { exception ->
+                                    mensagemNegativa(binding.root, "Erro ao atualizar dados: ${exception.message}")
+                                }
 
                         }
                     } else {
@@ -321,3 +715,5 @@ class TreinoAActivity : AppCompatActivity() {
         snackbar.show()
     }
 }
+
+*/
