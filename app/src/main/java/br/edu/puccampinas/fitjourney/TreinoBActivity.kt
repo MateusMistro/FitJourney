@@ -66,58 +66,43 @@ class TreinoBActivity : AppCompatActivity() {
     private fun setEditTextHints(documents: QuerySnapshot) {
         for (document in documents) {
             val field1 = document.getString("SupinoInclinadoHalter") ?: ""
-            val field2 = document.getString("SupinoRetoBarra") ?: ""
-            val field3 = document.getString("CrucifixoMaquina") ?: ""
-            val field4 = document.getString("ElevacaoLateralHalter") ?: ""
-            val field5 = document.getString("ElevacaoLateralPolia") ?: ""
-            val field6 = document.getString("DesenvolvimentoMaquina") ?: ""
-            val field7 = document.getString("TricepsFrances") ?: ""
-            val field8 = document.getString("TricepsCorda") ?: ""
+            val field2 = document.getString("SupinoInclinadoBarra") ?: ""
+            val field3 = document.getString("SupinoRetoBarra") ?: ""
+            val field4 = document.getString("CrossOver") ?: ""
+            val field5 = document.getString("CrucifixoMaquina") ?: ""
 
             binding.Exercice1.hint = "Supino Inclinado Halter: $field1"
-            binding.Exercice2.hint = "Supino Reto Barra: $field2"
-            binding.Exercice3.hint = "Crucifixo Maquina: $field3"
-            binding.Exercice4.hint = "Elevação Lateral Halter: $field4"
-            binding.Exercice5.hint = "Elevação Lateral Polia: $field5"
-            binding.Exercice6.hint = "Desenvolvimento Maquina: $field6"
-            binding.Exercice7.hint = "Triceps Frances: $field7"
-            binding.Exercice8.hint = "Triceps Corda: $field8"
+            binding.Exercice2.hint = "Supino Inclinado Barra: $field2"
+            binding.Exercice3.hint = "Supino Reto Barra: $field3"
+            binding.Exercice4.hint = "Cross Over: $field4"
+            binding.Exercice5.hint = "Crucifixo Maquina: $field5"
         }
     }
 
     private fun saveData() {
         val academia = intent.getStringExtra("academia") ?: ""
 
-        val supinoInclinadoHalter = binding.Exercice1.text.toString().trim()
-        val supinoRetoBarra = binding.Exercice2.text.toString().trim()
-        val crucifixoMaquina = binding.Exercice3.text.toString().trim()
-        val elevacaoLateralHalter = binding.Exercice4.text.toString().trim()
-        val elevacaoLateralPolia = binding.Exercice5.text.toString().trim()
-        val desenvolvimentoMaquina = binding.Exercice6.text.toString().trim()
-        val tricepsFrances = binding.Exercice7.text.toString().trim()
-        val tricepsCorda = binding.Exercice8.text.toString().trim()
+        val SupinoInclinadoHalter = binding.Exercice1.text.toString().trim()
+        val SupinoInclinadoBarra = binding.Exercice2.text.toString().trim()
+        val SupinoRetoBarra = binding.Exercice3.text.toString().trim()
+        val CrossOver = binding.Exercice4.text.toString().trim()
+        val CrucifixoMaquina = binding.Exercice5.text.toString().trim()
 
-        if (supinoInclinadoHalter.isEmpty() ||
-            supinoRetoBarra.isEmpty() ||
-            crucifixoMaquina.isEmpty() ||
-            elevacaoLateralHalter.isEmpty() ||
-            elevacaoLateralPolia.isEmpty() ||
-            desenvolvimentoMaquina.isEmpty() ||
-            tricepsFrances.isEmpty() ||
-            tricepsCorda.isEmpty()
+        if (SupinoInclinadoHalter.isEmpty() ||
+            SupinoInclinadoBarra.isEmpty() ||
+            SupinoRetoBarra.isEmpty() ||
+            CrossOver.isEmpty() ||
+            CrucifixoMaquina.isEmpty()
         ) {
             mensagemNegativa(binding.root, "Por favor, preencha todos os campos.")
             return
         }
 
-        val (supinoInclinadoHalterFirst, supinoInclinadoHalterSecond) = parseNumbers(supinoInclinadoHalter)
-        val (supinoRetoBarraFirst, supinoRetoBarraSecond) = parseNumbers(supinoRetoBarra)
-        val (crucifixoMaquinaFirst, crucifixoMaquinaSecond) = parseNumbers(crucifixoMaquina)
-        val (elevacaoLateralHalterFirst, elevacaoLateralHalterSecond) = parseNumbers(elevacaoLateralHalter)
-        val (elevacaoLateralPoliaFirst, elevacaoLateralPoliaSecond) = parseNumbers(elevacaoLateralPolia)
-        val (desenvolvimentoMaquinaFirst, desenvolvimentoMaquinaSecond) = parseNumbers(desenvolvimentoMaquina)
-        val (tricepsFrancesFirst, tricepsFrancesSecond) = parseNumbers(tricepsFrances)
-        val (tricepsCordaFirst, tricepsCordaSecond) = parseNumbers(tricepsCorda)
+        val (SupinoInclinadoHalterFirst, SupinoInclinadoHalterSecond) = parseNumbers(SupinoInclinadoHalter)
+        val (SupinoInclinadoBarraFirst, SupinoInclinadoBarraSecond) = parseNumbers(SupinoInclinadoBarra)
+        val (SupinoRetoBarraFirst, SupinoRetoBarraSecond) = parseNumbers(SupinoRetoBarra)
+        val (CrossOverFirst, CrossOverSecond) = parseNumbers(CrossOver)
+        val (CrucifixoMaquinaFirst, CrucifixoMaquinaSecond) = parseNumbers(CrucifixoMaquina)
 
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
@@ -126,14 +111,11 @@ class TreinoBActivity : AppCompatActivity() {
             val data = mapOf(
                 "Treino" to "Treino B",
                 "Academia" to academia,
-                "SupinoInclinadoHalter" to supinoInclinadoHalter,
-                "SupinoRetoBarra" to supinoRetoBarra,
-                "CrucifixoMaquina" to crucifixoMaquina,
-                "ElevacaoLateralHalter" to elevacaoLateralHalter,
-                "ElevacaoLateralPolia" to elevacaoLateralPolia,
-                "DesenvolvimentoMaquina" to desenvolvimentoMaquina,
-                "TricepsFrances" to tricepsFrances,
-                "TricepsCorda" to tricepsCorda,
+                "SupinoInclinadoHalter" to SupinoInclinadoHalter,
+                "SupinoInclinadoBarra" to SupinoInclinadoBarra,
+                "SupinoRetoBarra" to SupinoRetoBarra,
+                "CrossOver" to CrossOver,
+                "CrucifixoMaquina" to CrucifixoMaquina,
                 "UserId" to userId,
                 "Data" to Date()
             )
@@ -154,86 +136,55 @@ class TreinoBActivity : AppCompatActivity() {
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
                         for (document in documents) {
-                            val existingSupinoInclinado = document.getString("SupinoInclinadoHalter") ?: ""
-                            val existingSupinoReto = document.getString("SupinoRetoBarra") ?: ""
-                            val existingCrucifixo = document.getString("CrucifixoMaquina") ?: ""
-                            val existingElevacaoLateralHalter = document.getString("ElevacaoLateralHalter") ?: ""
-                            val existingElevacaoLateralPolia = document.getString("ElevacaoLateralPolia") ?: ""
-                            val existingDesenvolvimento = document.getString("DesenvolvimentoMaquina") ?: ""
-                            val existingTricepsFrances = document.getString("TricepsFrances") ?: ""
-                            val existingTricepsCorda = document.getString("TricepsCorda") ?: ""
+                            val existingSupinoInclinadoHalter = document.getString("SupinoInclinadoHalter") ?: ""
+                            val existingSupinoInclinadoBarra = document.getString("SupinoInclinadoBarra") ?: ""
+                            val existingSupinoRetoBarra = document.getString("SupinoRetoBarra") ?: ""
+                            val existingCrossOver = document.getString("CrossOver") ?: ""
+                            val existingCrucifixoMaquina = document.getString("CrucifixoMaquina") ?: ""
 
-                            val (existingSupinoInclinadoFirst, existingSupinoInclinadoSecond) = parseNumbers(existingSupinoInclinado)
-                            val (existingSupinoRetoFirst, existingSupinoRetoSecond) = parseNumbers(existingSupinoReto)
-                            val (existingCrucifixoFirst, existingCrucifixoSecond) = parseNumbers(existingCrucifixo)
-                            val (existingElevacaoLateralHalterFirst, existingElevacaoLateralHalterSecond) = parseNumbers(existingElevacaoLateralHalter)
-                            val (existingElevacaoLateralPoliaFirst, existingElevacaoLateralPoliaSecond) = parseNumbers(existingElevacaoLateralPolia)
-                            val (existingDesenvolvimentoFirst, existingDesenvolvimentoSecond) = parseNumbers(existingDesenvolvimento)
-                            val (existingTricepsFrancesFirst, existingTricepsFrancesSecond) = parseNumbers(existingTricepsFrances)
-                            val (existingTricepsCordaFirst, existingTricepsCordaSecond) = parseNumbers(existingTricepsCorda)
+                            val (existingSupinoInclinadoHalterFirst, existingSupinoInclinadoHalterSecond) = parseNumbers(existingSupinoInclinadoHalter)
+                            val (existingSupinoInclinadoBarraFirst, existingSupinoInclinadoBarraSecond) = parseNumbers(existingSupinoInclinadoBarra)
+                            val (existingSupinoRetoBarraFirst, existingSupinoRetoBarraSecond) = parseNumbers(existingSupinoRetoBarra)
+                            val (existingCrossOverFirst, existingCrossOverSecond) = parseNumbers(existingCrossOver)
+                            val (existingCrucifixoMaquinaFirst, existingCrucifixoMaquinaSecond) = parseNumbers(existingCrucifixoMaquina)
 
-                            var novoSupinoInclinado= existingSupinoInclinado
-                            var novoSupinoReto = existingSupinoReto
-                            var novoCrucifixo= existingCrucifixo
-                            var novoElevacaoHalter = existingElevacaoLateralHalter
-                            var novoElevacaoPolia = existingElevacaoLateralPolia
-                            var novoDesenvolvimento = existingDesenvolvimento
-                            var novoFrances = existingTricepsFrances
-                            var novoCorda = existingTricepsCorda
-
+                            var novoSupinoInclinadoHalter = existingSupinoInclinadoHalter
+                            var novoSupinoInclinadoBarra = existingSupinoInclinadoBarra
+                            var novoSupinoRetoBarra= existingSupinoRetoBarra
+                            var novoCrossOver = existingCrossOver
+                            var novoCrucifixoMaquina = existingCrucifixoMaquina
 
                             // Agora verifica corretamente se deve atualizar com base no novo valor
-                            if (shouldUpdate(existingSupinoInclinadoFirst, existingSupinoInclinadoSecond, supinoInclinadoHalterFirst, supinoInclinadoHalterSecond)) {
-                                    novoSupinoInclinado = supinoInclinadoHalter
+                            if (shouldUpdate(existingSupinoInclinadoHalterFirst, existingSupinoInclinadoHalterSecond, SupinoInclinadoHalterFirst, SupinoInclinadoHalterSecond)) {
+                                    novoSupinoInclinadoHalter = SupinoInclinadoHalter
                                 }
                             if(shouldUpdate(
-                                    existingSupinoRetoFirst, existingSupinoRetoSecond, supinoRetoBarraFirst, supinoRetoBarraSecond
+                                    existingSupinoInclinadoBarraFirst, existingSupinoInclinadoBarraSecond, SupinoInclinadoBarraFirst, SupinoInclinadoBarraSecond
                                 )){
-                                novoSupinoReto = supinoRetoBarra
+                                novoSupinoInclinadoBarra = SupinoInclinadoBarra
                             }
                             if(shouldUpdate(
-                                    existingCrucifixoFirst, existingCrucifixoSecond, crucifixoMaquinaFirst, crucifixoMaquinaSecond
+                                    existingSupinoRetoBarraFirst, existingSupinoRetoBarraSecond, SupinoRetoBarraFirst, SupinoRetoBarraSecond
                                 )){
-                                novoCrucifixo = crucifixoMaquina
+                                novoSupinoRetoBarra = SupinoRetoBarra
                             }
                             if(shouldUpdate(
-                                    existingElevacaoLateralHalterFirst, existingElevacaoLateralHalterSecond, elevacaoLateralHalterFirst, elevacaoLateralHalterSecond
+                                    existingCrossOverFirst, existingCrossOverSecond, CrossOverFirst, CrossOverSecond
                                 )){
-                                novoElevacaoHalter = elevacaoLateralHalter
+                                novoCrossOver = CrossOver
                             }
                             if(shouldUpdate(
-                                    existingElevacaoLateralPoliaFirst, existingElevacaoLateralPoliaSecond, elevacaoLateralPoliaFirst, elevacaoLateralPoliaSecond
+                                    existingCrucifixoMaquinaFirst, existingCrucifixoMaquinaSecond, CrucifixoMaquinaFirst, CrucifixoMaquinaSecond
                                 )){
-                                novoElevacaoPolia = elevacaoLateralPolia
+                                novoCrucifixoMaquina = CrucifixoMaquina
                             }
-                            if(shouldUpdate(
-                                    existingDesenvolvimentoFirst, existingDesenvolvimentoSecond, desenvolvimentoMaquinaFirst, desenvolvimentoMaquinaSecond
-                                )){
-                                novoDesenvolvimento = desenvolvimentoMaquina
-                            }
-
-                            if( shouldUpdate(
-                                    existingTricepsFrancesFirst, existingTricepsFrancesSecond, tricepsFrancesFirst, tricepsFrancesSecond
-                                )){
-                                     novoFrances = tricepsFrances
-
-                                 }
-                            if(shouldUpdate(
-                                    existingTricepsCordaFirst, existingTricepsCordaSecond, tricepsCordaFirst, tricepsCordaSecond
-                                )){
-                                novoCorda = tricepsCorda
-                            }
-
 
                                 val updatedData = mapOf(
-                                    "SupinoInclinadoHalter" to novoSupinoInclinado,
-                                    "SupinoRetoBarra" to novoSupinoReto,
-                                    "CrucifixoMaquina" to novoCrucifixo,
-                                    "ElevacaoLateralHalter" to novoElevacaoHalter,
-                                    "ElevacaoLateralPolia" to novoElevacaoPolia,
-                                    "DesenvolvimentoMaquina" to novoDesenvolvimento,
-                                    "TricepsFrances" to novoFrances,
-                                    "TricepsCorda" to novoCorda
+                                    "SupinoInclinadoHalter" to novoSupinoInclinadoHalter,
+                                    "SupinoInclinadoBarra" to novoSupinoInclinadoBarra,
+                                    "SupinoRetoBarra" to novoSupinoRetoBarra,
+                                    "CrossOver" to novoCrossOver,
+                                    "CrucifixoMaquina" to novoCrucifixoMaquina
                                 )
 
                                 db.collection("WorkoutB")
@@ -255,57 +206,57 @@ class TreinoBActivity : AppCompatActivity() {
                             .get()
                             .addOnSuccessListener { fbDocuments ->
                                 for (fbDocument in fbDocuments) {
-                                    val (fbSupinoInclinadoFirst, fbSupinoInclinadoSecond) = parseNumbers(
+                                    val (fbSupinoInclinadoHalterFirst, fbSupinoInclinadoHalterSecond) = parseNumbers(
                                         fbDocument.getString("SupinoInclinadoHalter") ?: ""
+                                    )
+                                    val (fbSupinoInclinadoBarraFirst, fbSupinoInclinadoBarraSecond) = parseNumbers(
+                                        fbDocument.getString("SupinoInclinadoBarra") ?: ""
                                     )
                                     val (fbSupinoRetoFirst, fbSupinoRetoSecond) = parseNumbers(
                                         fbDocument.getString("SupinoRetoBarra") ?: ""
                                     )
-                                    val (fbElevacaoLateralHalterFirst, fbElevacaoLateralHalterSecond) = parseNumbers(
-                                        fbDocument.getString("ElevacaoLateralHalter") ?: ""
-                                    )
 
                                     // Inicializando variáveis para os novos valores
-                                    var updatedSupinoInclinado =
+                                    var updatedSupinoInclinadoHalter =
                                         fbDocument.getString("SupinoInclinadoHalter") ?: ""
+                                    var updatedSupinoInclinadoBarra =
+                                        fbDocument.getString("SupinoInclinadoBarra") ?: ""
                                     var updatedSupinoReto =
                                         fbDocument.getString("SupinoRetoBarra") ?: ""
-                                    var updatedElevacaoLateralHalter =
-                                        fbDocument.getString("ElevacaoLateralHalter") ?: ""
 
 
                                     // Verifica se deve atualizar também para academia FB
                                     if (shouldUpdate(
-                                            fbSupinoInclinadoFirst,
-                                            fbSupinoInclinadoSecond,
-                                            supinoInclinadoHalterFirst,
-                                            supinoInclinadoHalterSecond
+                                            fbSupinoInclinadoHalterFirst,
+                                            fbSupinoInclinadoHalterSecond,
+                                            SupinoInclinadoHalterFirst,
+                                            SupinoInclinadoHalterSecond
                                         )
                                     ) {
-                                        updatedSupinoInclinado = supinoInclinadoHalter
+                                        updatedSupinoInclinadoHalter = SupinoInclinadoHalter
+                                    }
+                                    if (shouldUpdate(
+                                            fbSupinoInclinadoBarraFirst,
+                                            fbSupinoInclinadoBarraSecond,
+                                            SupinoInclinadoBarraFirst,
+                                            SupinoInclinadoBarraSecond
+                                        )
+                                    ) {
+                                        updatedSupinoInclinadoBarra = SupinoInclinadoBarra
                                     }
                                     if (shouldUpdate(
                                             fbSupinoRetoFirst,
                                             fbSupinoRetoSecond,
-                                            supinoRetoBarraFirst,
-                                            supinoRetoBarraSecond
+                                            SupinoRetoBarraFirst,
+                                            SupinoRetoBarraSecond
                                         )
                                     ) {
-                                        updatedSupinoReto = supinoRetoBarra
-                                    }
-                                    if (shouldUpdate(
-                                            fbElevacaoLateralHalterFirst,
-                                            fbElevacaoLateralHalterSecond,
-                                            elevacaoLateralHalterFirst,
-                                            elevacaoLateralHalterSecond
-                                        )
-                                    ) {
-                                        updatedElevacaoLateralHalter = elevacaoLateralHalter
+                                        updatedSupinoReto = SupinoRetoBarra
                                     }
                                     val updatedData = mapOf(
-                                        "SupinoInclinadoHalter" to updatedSupinoInclinado,
-                                        "SupinoRetoBarra" to updatedSupinoReto,
-                                        "ElevacaoLateralHalter" to updatedElevacaoLateralHalter
+                                        "SupinoInclinadoHalter" to updatedSupinoInclinadoHalter,
+                                        "SupinoInclinadoBarra" to updatedSupinoInclinadoBarra,
+                                        "SupinoRetoBarra" to updatedSupinoReto
                                     )
 
                                     db.collection("WorkoutB")
@@ -328,63 +279,64 @@ class TreinoBActivity : AppCompatActivity() {
                                     "Erro ao buscar documentos da academia FB: ${exception.message}"
                                 )
                             }
+
                     }else if(academia == "FB") {
                         db.collection("WorkoutB")
                             .whereEqualTo("Academia", "SF")
                             .get()
                             .addOnSuccessListener { fbDocuments ->
                                 for (fbDocument in fbDocuments) {
-                                    val (fbSupinoInclinadoFirst, fbSupinoInclinadoSecond) = parseNumbers(
+                                    val (fbSupinoInclinadoHalterFirst, fbSupinoInclinadoHalterSecond) = parseNumbers(
                                         fbDocument.getString("SupinoInclinadoHalter") ?: ""
+                                    )
+                                    val (fbSupinoInclinadoBarraFirst, fbSupinoInclinadoBarraSecond) = parseNumbers(
+                                        fbDocument.getString("SupinoInclinadoBarra") ?: ""
                                     )
                                     val (fbSupinoRetoFirst, fbSupinoRetoSecond) = parseNumbers(
                                         fbDocument.getString("SupinoRetoBarra") ?: ""
                                     )
-                                    val (fbElevacaoLateralHalterFirst, fbElevacaoLateralHalterSecond) = parseNumbers(
-                                        fbDocument.getString("ElevacaoLateralHalter") ?: ""
-                                    )
 
                                     // Inicializando variáveis para os novos valores
-                                    var updatedSupinoInclinado =
+                                    var updatedSupinoInclinadoHalter =
                                         fbDocument.getString("SupinoInclinadoHalter") ?: ""
+                                    var updatedSupinoInclinadoBarra =
+                                        fbDocument.getString("SupinoInclinadoBarra") ?: ""
                                     var updatedSupinoReto =
                                         fbDocument.getString("SupinoRetoBarra") ?: ""
-                                    var updatedElevacaoLateralHalter =
-                                        fbDocument.getString("ElevacaoLateralHalter") ?: ""
 
 
                                     // Verifica se deve atualizar também para academia FB
                                     if (shouldUpdate(
-                                            fbSupinoInclinadoFirst,
-                                            fbSupinoInclinadoSecond,
-                                            supinoInclinadoHalterFirst,
-                                            supinoInclinadoHalterSecond
+                                            fbSupinoInclinadoHalterFirst,
+                                            fbSupinoInclinadoHalterSecond,
+                                            SupinoInclinadoHalterFirst,
+                                            SupinoInclinadoHalterSecond
                                         )
                                     ) {
-                                        updatedSupinoInclinado = supinoInclinadoHalter
+                                        updatedSupinoInclinadoHalter = SupinoInclinadoHalter
+                                    }
+                                    if (shouldUpdate(
+                                            fbSupinoInclinadoBarraFirst,
+                                            fbSupinoInclinadoBarraSecond,
+                                            SupinoInclinadoBarraFirst,
+                                            SupinoInclinadoBarraSecond
+                                        )
+                                    ) {
+                                        updatedSupinoInclinadoBarra = SupinoInclinadoBarra
                                     }
                                     if (shouldUpdate(
                                             fbSupinoRetoFirst,
                                             fbSupinoRetoSecond,
-                                            supinoRetoBarraFirst,
-                                            supinoRetoBarraSecond
+                                            SupinoRetoBarraFirst,
+                                            SupinoRetoBarraSecond
                                         )
                                     ) {
-                                        updatedSupinoReto = supinoRetoBarra
-                                    }
-                                    if (shouldUpdate(
-                                            fbElevacaoLateralHalterFirst,
-                                            fbElevacaoLateralHalterSecond,
-                                            elevacaoLateralHalterFirst,
-                                            elevacaoLateralHalterSecond
-                                        )
-                                    ) {
-                                        updatedElevacaoLateralHalter = elevacaoLateralHalter
+                                        updatedSupinoReto = SupinoRetoBarra
                                     }
                                     val updatedData = mapOf(
-                                        "SupinoInclinadoHalter" to updatedSupinoInclinado,
-                                        "SupinoRetoBarra" to updatedSupinoReto,
-                                        "ElevacaoLateralHalter" to updatedElevacaoLateralHalter
+                                        "SupinoInclinadoHalter" to updatedSupinoInclinadoHalter,
+                                        "SupinoInclinadoBarra" to updatedSupinoInclinadoBarra,
+                                        "SupinoRetoBarra" to updatedSupinoReto
                                     )
 
                                     db.collection("WorkoutB")
