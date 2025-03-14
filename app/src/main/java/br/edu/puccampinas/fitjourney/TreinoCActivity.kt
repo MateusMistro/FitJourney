@@ -66,54 +66,54 @@ class TreinoCActivity : AppCompatActivity() {
 
     private fun setEditTextHints(documents: QuerySnapshot) {
         for (document in documents) {
-            val field1 = document.getString("PuxadaAberta") ?: ""
-            val field2 = document.getString("RemadaTriangulo") ?: ""
-            val field3 = document.getString("Pulldown") ?: ""
-            val field4 = document.getString("CrucifixoInverso") ?: ""
-            val field5 = document.getString("BicepsInclinado") ?: ""
-            val field6 = document.getString("RoscaMartelo") ?: ""
-            val field7 = document.getString("RoscaScottMaquina") ?: ""
+            val field1 = document.getString("Extensora") ?: ""
+            val field2 = document.getString("Agachamento") ?: ""
+            val field3 = document.getString("LegPress") ?: ""
+            val field4 = document.getString("MesaFlexora") ?: ""
+            val field5 = document.getString("CadeiraFlexora") ?: ""
+            val field6 = document.getString("PanturrilhaSentado") ?: ""
+            val field7 = document.getString("PanturrilhaEmPe") ?: ""
 
-            binding.Exercice1.hint = "Puxada Aberta: $field1"
-            binding.Exercice2.hint = "Remada Triângulo: $field2"
-            binding.Exercice3.hint = "Pulldown: $field3"
-            binding.Exercice4.hint = "Crucifixo Inverso: $field4"
-            binding.Exercice5.hint = "Biceps Inclinado: $field5"
-            binding.Exercice6.hint = "Rosca Martelo: $field6"
-            binding.Exercice7.hint = "Rosca Scott Maquina: $field7"
+            binding.Exercice1.hint = "Extensora: $field1"
+            binding.Exercice2.hint = "Agachamento: $field2"
+            binding.Exercice3.hint = "Leg Press: $field3"
+            binding.Exercice4.hint = "Mesa Flexora: $field4"
+            binding.Exercice5.hint = "Cadeira Flexora: $field5"
+            binding.Exercice6.hint = "Panturrilha Sentado: $field6"
+            binding.Exercice7.hint = "Panturrilha Em Pé: $field7"
         }
     }
 
     private fun saveData() {
         val academia = intent.getStringExtra("academia") ?: ""
 
-        val puxadaAberta = binding.Exercice1.text.toString().trim()
-        val remadaTriangulo = binding.Exercice2.text.toString().trim()
-        val pulldown = binding.Exercice3.text.toString().trim()
-        val crucifixoInverso = binding.Exercice4.text.toString().trim()
-        val bicepsInclinado = binding.Exercice5.text.toString().trim()
-        val roscaMartelo = binding.Exercice6.text.toString().trim()
-        val roscaScottMaquina = binding.Exercice7.text.toString().trim()
+        val Extensora = binding.Exercice1.text.toString().trim()
+        val Agachamento = binding.Exercice2.text.toString().trim()
+        val LegPress = binding.Exercice3.text.toString().trim()
+        val MesaFlexora = binding.Exercice4.text.toString().trim()
+        val CadeiraFlexora = binding.Exercice5.text.toString().trim()
+        val PanturrilhaSentado = binding.Exercice6.text.toString().trim()
+        val PanturrilhaEmPe = binding.Exercice7.text.toString().trim()
 
-        if (puxadaAberta.isEmpty() ||
-            remadaTriangulo.isEmpty() ||
-            pulldown.isEmpty() ||
-            crucifixoInverso.isEmpty() ||
-            bicepsInclinado.isEmpty() ||
-            roscaMartelo.isEmpty() ||
-            roscaScottMaquina.isEmpty()
+        if (Extensora.isEmpty() ||
+            Agachamento.isEmpty() ||
+            LegPress.isEmpty() ||
+            MesaFlexora.isEmpty() ||
+            CadeiraFlexora.isEmpty() ||
+            PanturrilhaSentado.isEmpty() ||
+            PanturrilhaEmPe.isEmpty()
         ) {
             mensagemNegativa(binding.root, "Por favor, preencha todos os campos.")
             return
         }
 
-        val (puxadaAbertaFirst, puxadaAbertaSecond) = parseNumbers(puxadaAberta)
-        val (remadaTrianguloFirst, remadaTrianguloSecond) = parseNumbers(remadaTriangulo)
-        val (pulldownFirst, pulldownSecond) = parseNumbers(pulldown)
-        val (crucifixoInversoFirst, crucifixoInversoSecond) = parseNumbers(crucifixoInverso)
-        val (bicepsInclinadoFirst, bicepsInclinadoSecond) = parseNumbers(bicepsInclinado)
-        val (roscaMarteloFirst, roscaMarteloSecond) = parseNumbers(roscaMartelo)
-        val (roscaScottMaquinaFirst, roscaScottMaquinaSecond) = parseNumbers(roscaScottMaquina)
+        val (ExtensoraFirst, ExtensoraSecond) = parseNumbers(Extensora)
+        val (AgachamentoFirst, AgachamentoSecond) = parseNumbers(Agachamento)
+        val (LegPressFirst, LegPressSecond) = parseNumbers(LegPress)
+        val (MesaFlexoraFirst, MesaFlexoraSecond) = parseNumbers(MesaFlexora)
+        val (CadeiraFlexoraFirst, CadeiraFlexoraSecond) = parseNumbers(CadeiraFlexora)
+        val (PanturrilhaSentadoFirst, PanturrilhaSentadoSecond) = parseNumbers(PanturrilhaSentado)
+        val (PanturrilhaEmPeFirst, PanturrilhaEmPeSecond) = parseNumbers(PanturrilhaEmPe)
 
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
@@ -122,13 +122,13 @@ class TreinoCActivity : AppCompatActivity() {
             val data = mapOf(
                 "Treino" to "Treino C",
                 "Academia" to academia,
-                "PuxadaAberta" to puxadaAberta,
-                "RemadaTriangulo" to remadaTriangulo,
-                "Pulldown" to pulldown,
-                "CrucifixoInverso" to crucifixoInverso,
-                "BicepsInclinado" to bicepsInclinado,
-                "RoscaMartelo" to roscaMartelo,
-                "RoscaScottMaquina" to roscaScottMaquina,
+                "Extensora" to Extensora,
+                "Agachamento" to Agachamento,
+                "LegPress" to LegPress,
+                "MesaFlexora" to MesaFlexora,
+                "CadeiraFlexora" to CadeiraFlexora,
+                "PanturrilhaSentado" to PanturrilhaSentado,
+                "PanturrilhaEmPe" to PanturrilhaEmPe,
                 "UserId" to userId,
                 "Data" to Date()
             )
@@ -149,76 +149,75 @@ class TreinoCActivity : AppCompatActivity() {
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
                         for (document in documents) {
-                            val existingPuxadaAberta = document.getString("PuxadaAberta") ?: ""
-                            val existingRemadaTriangulo = document.getString("RemadaTriangulo") ?: ""
-                            val existingPulldown = document.getString("Pulldown") ?: ""
-                            val existingCrucifixoInvertido = document.getString("CrucifixoInverso") ?: ""
-                            val existingBicepsInclinado = document.getString("BicepsInclinado") ?: ""
-                            val existingRoscaMartelo = document.getString("RoscaMartelo") ?: ""
-                            val existingRoscaScottMaquina = document.getString("RoscaScottMaquina") ?: ""
+                            val existingExtensora = document.getString("Extensora") ?: ""
+                            val existingAgachamento = document.getString("Agachamento") ?: ""
+                            val existingLegPress = document.getString("LegPress") ?: ""
+                            val existingMesaFlexora = document.getString("MesaFlexora") ?: ""
+                            val existingCadeiraFlexora = document.getString("CadeiraFlexora") ?: ""
+                            val existingPanturrilhaSentado = document.getString("PanturrilhaSentado") ?: ""
+                            val existingPanturrilhaEmPe = document.getString("PanturrilhaEmPe") ?: ""
 
-                            val (existingPuxadaAbertaFirst, existingPuxadaAbertaSecond) = parseNumbers(existingPuxadaAberta)
-                            val (existingRemadaTrianguloFirst, existingRemadaTrianguloSecond) = parseNumbers(existingRemadaTriangulo)
-                            val (existingPulldownFirst, existingPulldownSecond) = parseNumbers(existingPulldown)
-                            val (existingCrucifixoInvertidoFirst, existingCrucifixoInvertidoSecond) = parseNumbers(existingCrucifixoInvertido)
-                            val (existingBicepsInclinadoFirst, existingBicepsInclinadoSecond) = parseNumbers(existingBicepsInclinado)
-                            val (existingRoscaMarteloFirst, existingRoscaMarteloSecond) = parseNumbers(existingRoscaMartelo)
-                            val (existingRoscaScottMaquinaFirst, existingRoscaScottMaquinaSecond) = parseNumbers(existingRoscaScottMaquina)
+                            val (existingExtensoraFirst, existingExtensoraSecond) = parseNumbers(existingExtensora)
+                            val (existingAgachamentoFirst, existingAgachamentoSecond) = parseNumbers(existingAgachamento)
+                            val (existingLegPressFirst, existingLegPressSecond) = parseNumbers(existingLegPress)
+                            val (existingMesaFlexoraFirst, existingMesaFlexoraSecond) = parseNumbers(existingMesaFlexora)
+                            val (existingCadeiraFlexoraFirst, existingCadeiraFlexoraSecond) = parseNumbers(existingCadeiraFlexora)
+                            val (existingPanturrilhaSentadoFirst, existingPanturrilhaSentadoSecond) = parseNumbers(existingPanturrilhaSentado)
+                            val (existingPanturrilhaEmPeFirst, existingPanturrilhaEmPeSecond) = parseNumbers(existingPanturrilhaEmPe)
 
-                            var novoPuxadaAberta= existingPuxadaAberta
-                            var novoRemadaTriangulo = existingRemadaTriangulo
-                            var novoPulldown= existingPulldown
-                            var novoCrucifixoInvertido = existingCrucifixoInvertido
-                            var novoBicepsInclinado = existingBicepsInclinado
-                            var novoRoscaMartelo = existingRoscaMartelo
-                            var novoRoscaScottMaquina = existingRoscaScottMaquina
+                            var novoExtensora= existingExtensora
+                            var novoAgachamento = existingAgachamento
+                            var novoLegPress= existingLegPress
+                            var novoMesaFlexora = existingMesaFlexora
+                            var novoCadeiraFlexora = existingCadeiraFlexora
+                            var novoPanturrilhaSentado = existingPanturrilhaSentado
+                            var novoPanturrilhaEmPe = existingPanturrilhaEmPe
 
 
                             // Agora verifica corretamente se deve atualizar com base no novo valor
-                            if (shouldUpdate(existingPuxadaAbertaFirst, existingPuxadaAbertaSecond, puxadaAbertaFirst, puxadaAbertaSecond)) {
-                                novoPuxadaAberta = puxadaAberta
+                            if (shouldUpdate(existingExtensoraFirst, existingExtensoraSecond, ExtensoraFirst, ExtensoraSecond)) {
+                                novoExtensora = Extensora
                             }
                             if(shouldUpdate(
-                                    existingRemadaTrianguloFirst, existingRemadaTrianguloSecond, remadaTrianguloFirst, remadaTrianguloSecond
+                                    existingAgachamentoFirst, existingAgachamentoSecond, AgachamentoFirst, AgachamentoSecond
                                 )){
-                                novoRemadaTriangulo = remadaTriangulo
+                                novoAgachamento = Agachamento
                             }
                             if(shouldUpdate(
-                                    existingPulldownFirst, existingPulldownSecond, pulldownFirst, pulldownSecond
+                                    existingLegPressFirst, existingLegPressSecond, LegPressFirst, LegPressSecond
                                 )){
-                                novoPulldown = pulldown
+                                novoLegPress = LegPress
                             }
                             if(shouldUpdate(
-                                    existingCrucifixoInvertidoFirst, existingCrucifixoInvertidoSecond, crucifixoInversoFirst, crucifixoInversoSecond
+                                    existingMesaFlexoraFirst, existingMesaFlexoraSecond, MesaFlexoraFirst, MesaFlexoraSecond
                                 )){
-                                novoCrucifixoInvertido = crucifixoInverso
+                                novoMesaFlexora = MesaFlexora
                             }
                             if(shouldUpdate(
-                                    existingBicepsInclinadoFirst, existingBicepsInclinadoSecond, bicepsInclinadoFirst, bicepsInclinadoSecond
+                                    existingCadeiraFlexoraFirst, existingCadeiraFlexoraSecond, CadeiraFlexoraFirst, CadeiraFlexoraSecond
                                 )){
-                                novoBicepsInclinado = bicepsInclinado
+                                novoCadeiraFlexora = CadeiraFlexora
                             }
                             if(shouldUpdate(
-                                    existingRoscaMarteloFirst, existingRoscaMarteloSecond, roscaMarteloFirst, roscaMarteloSecond
+                                    existingPanturrilhaSentadoFirst, existingPanturrilhaSentadoSecond, PanturrilhaSentadoFirst, PanturrilhaSentadoSecond
                                 )){
-                                novoRoscaMartelo = roscaMartelo
+                                novoPanturrilhaSentado = PanturrilhaSentado
                             }
 
                             if( shouldUpdate(
-                                    existingRoscaScottMaquinaFirst, existingRoscaScottMaquinaSecond, roscaScottMaquinaFirst, roscaScottMaquinaSecond
+                                    existingPanturrilhaEmPeFirst, existingPanturrilhaEmPeSecond, PanturrilhaEmPeFirst, PanturrilhaEmPeSecond
                                 )){
-                                novoRoscaScottMaquina = roscaScottMaquina
-
+                                novoPanturrilhaEmPe = PanturrilhaEmPe
                             }
 
                             val updatedData = mapOf(
-                                "PuxadaAberta" to novoPuxadaAberta,
-                                "RemadaTriangulo" to novoRemadaTriangulo,
-                                "Pulldown" to novoPulldown,
-                                "CrucifixoInverso" to novoCrucifixoInvertido,
-                                "BicepsInclinado" to novoBicepsInclinado,
-                                "RoscaMartelo" to novoRoscaMartelo,
-                                "RoscaScottMaquina" to novoRoscaScottMaquina
+                                "Extensora" to novoExtensora,
+                                "Agachamento" to novoAgachamento,
+                                "LegPress" to novoLegPress,
+                                "MesaFlexora" to novoMesaFlexora,
+                                "CadeiraFlexora" to novoCadeiraFlexora,
+                                "PanturrilhaSentado" to novoPanturrilhaSentado,
+                                "PanturrilhaEmPe" to novoPanturrilhaEmPe
                             )
 
                             db.collection("WorkoutC")
@@ -229,141 +228,7 @@ class TreinoCActivity : AppCompatActivity() {
                                 .addOnFailureListener { exception ->
                                     mensagemNegativa(binding.root, "Erro ao atualizar dados: ${exception.message}")
                                 }
-
                         }
-                    }
-
-                    if(academia == "SF") {
-                        // Atualiza também os documentos com "Academia" = "FB"
-                        db.collection("WorkoutC")
-                            .whereEqualTo("Academia", "FB")
-                            .get()
-                            .addOnSuccessListener { fbDocuments ->
-                                for (fbDocument in fbDocuments) {
-                                    val (fbBicepsInclinadoFirst, fbBicepsInclinadoSecond) = parseNumbers(
-                                        fbDocument.getString("BicepsInclinado") ?: ""
-                                    )
-                                    val (fbRoscaMarteloFirst, fbRoscaMarteloSecond) = parseNumbers(
-                                        fbDocument.getString("RoscaMartelo") ?: ""
-                                    )
-
-                                    // Inicializando variáveis para os novos valores
-                                    var updatedBicepsInclinado =
-                                        fbDocument.getString("BicepsInclinado") ?: ""
-                                    var updatedRoscaMartelo =
-                                        fbDocument.getString("RoscaMartelo") ?: ""
-
-
-                                    // Verifica se deve atualizar também para academia FB
-                                    if (shouldUpdate(
-                                            fbBicepsInclinadoFirst,
-                                            fbBicepsInclinadoSecond,
-                                            bicepsInclinadoFirst,
-                                            bicepsInclinadoSecond
-                                        )
-                                    ) {
-                                        updatedBicepsInclinado = bicepsInclinado
-                                    }
-                                    if (shouldUpdate(
-                                            fbRoscaMarteloFirst,
-                                            fbRoscaMarteloSecond,
-                                            roscaMarteloFirst,
-                                            roscaMarteloSecond
-                                        )
-                                    ) {
-                                        updatedRoscaMartelo = roscaMartelo
-                                    }
-
-                                    val updatedData = mapOf(
-                                        "BicepsInclinado" to updatedBicepsInclinado,
-                                        "RoscaMartelo" to updatedRoscaMartelo
-                                    )
-
-                                    db.collection("WorkoutC")
-                                        .document(fbDocument.id)
-                                        .update(updatedData)
-                                        .addOnSuccessListener {
-                                        }
-                                        .addOnFailureListener { exception ->
-                                            mensagemNegativa(
-                                                binding.root,
-                                                "Erro ao atualizar dados da academia FB: ${exception.message}"
-                                            )
-                                        }
-                                }
-
-                            }
-                            .addOnFailureListener { exception ->
-                                mensagemNegativa(
-                                    binding.root,
-                                    "Erro ao buscar documentos da academia FB: ${exception.message}"
-                                )
-                            }
-                    }else if(academia == "FB") {
-                        db.collection("WorkoutC")
-                            .whereEqualTo("Academia", "SF")
-                            .get()
-                            .addOnSuccessListener { fbDocuments ->
-                                for (fbDocument in fbDocuments) {
-                                    val (fbBicepsInclinadoFirst, fbBicepsInclinadoSecond) = parseNumbers(
-                                        fbDocument.getString("BicepsInclinado") ?: ""
-                                    )
-                                    val (fbRoscaMarteloFirst, fbRoscaMarteloSecond) = parseNumbers(
-                                        fbDocument.getString("RoscaMartelo") ?: ""
-                                    )
-
-                                    // Inicializando variáveis para os novos valores
-                                    var updatedBicepsInclinado =
-                                        fbDocument.getString("BicepsInclinado") ?: ""
-                                    var updatedRoscaMartelo =
-                                        fbDocument.getString("RoscaMartelo") ?: ""
-
-
-                                    // Verifica se deve atualizar também para academia FB
-                                    if (shouldUpdate(
-                                            fbBicepsInclinadoFirst,
-                                            fbBicepsInclinadoSecond,
-                                            bicepsInclinadoFirst,
-                                            bicepsInclinadoSecond
-                                        )
-                                    ) {
-                                        updatedBicepsInclinado = bicepsInclinado
-                                    }
-                                    if (shouldUpdate(
-                                            fbRoscaMarteloFirst,
-                                            fbRoscaMarteloSecond,
-                                            roscaMarteloFirst,
-                                            roscaMarteloSecond
-                                        )
-                                    ) {
-                                        updatedRoscaMartelo = roscaMartelo
-                                    }
-
-                                    val updatedData = mapOf(
-                                        "BicepsInclinado" to updatedBicepsInclinado,
-                                        "RoscaMartelo" to updatedRoscaMartelo
-                                    )
-
-                                    db.collection("WorkoutC")
-                                        .document(fbDocument.id)
-                                        .update(updatedData)
-                                        .addOnSuccessListener {
-                                        }
-                                        .addOnFailureListener { exception ->
-                                            mensagemNegativa(
-                                                binding.root,
-                                                "Erro ao atualizar dados da academia FB: ${exception.message}"
-                                            )
-                                        }
-                                }
-
-                            }
-                            .addOnFailureListener { exception ->
-                                mensagemNegativa(
-                                    binding.root,
-                                    "Erro ao buscar documentos da academia FB: ${exception.message}"
-                                )
-                            }
                     }
                 }
                 .addOnFailureListener { exception ->

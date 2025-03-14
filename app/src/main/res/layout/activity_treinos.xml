@@ -72,6 +72,17 @@
         android:textSize="25dp"/>
 
     <Button
+        android:id="@+id/btnTreinoE"
+        android:layout_width="300dp"
+        android:layout_height="55dp"
+        android:background="@drawable/borda"
+        android:backgroundTint="@color/corPrincipal"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:text="treino e"
+        android:textSize="25dp"/>
+
+    <Button
         android:id="@+id/btnHistorico"
         android:layout_width="300dp"
         android:layout_height="55dp"
