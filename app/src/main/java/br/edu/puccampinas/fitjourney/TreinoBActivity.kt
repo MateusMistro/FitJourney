@@ -70,12 +70,14 @@ class TreinoBActivity : AppCompatActivity() {
             val field3 = document.getString("SupinoRetoBarra") ?: ""
             val field4 = document.getString("CrossOver") ?: ""
             val field5 = document.getString("CrucifixoMaquina") ?: ""
+            val field6 = document.getString("Antebraco") ?: ""
 
             binding.Exercice1.hint = "Supino Inclinado Halter: $field1"
             binding.Exercice2.hint = "Supino Inclinado Barra: $field2"
             binding.Exercice3.hint = "Supino Reto Barra: $field3"
             binding.Exercice4.hint = "Cross Over: $field4"
             binding.Exercice5.hint = "Crucifixo Maquina: $field5"
+            binding.Exercice6.hint = "Antebraço: $field6"
         }
     }
 
@@ -87,12 +89,14 @@ class TreinoBActivity : AppCompatActivity() {
         val SupinoRetoBarra = binding.Exercice3.text.toString().trim()
         val CrossOver = binding.Exercice4.text.toString().trim()
         val CrucifixoMaquina = binding.Exercice5.text.toString().trim()
+        val Antebraco = binding.Exercice6.text.toString().trim()
 
         if (SupinoInclinadoHalter.isEmpty() ||
             SupinoInclinadoBarra.isEmpty() ||
             SupinoRetoBarra.isEmpty() ||
             CrossOver.isEmpty() ||
-            CrucifixoMaquina.isEmpty()
+            CrucifixoMaquina.isEmpty() ||
+            Antebraco.isEmpty()
         ) {
             mensagemNegativa(binding.root, "Por favor, preencha todos os campos.")
             return
@@ -103,6 +107,7 @@ class TreinoBActivity : AppCompatActivity() {
         val (SupinoRetoBarraFirst, SupinoRetoBarraSecond) = parseNumbers(SupinoRetoBarra)
         val (CrossOverFirst, CrossOverSecond) = parseNumbers(CrossOver)
         val (CrucifixoMaquinaFirst, CrucifixoMaquinaSecond) = parseNumbers(CrucifixoMaquina)
+        val (AntebracoFirst, AntebracoSecond) = parseNumbers(Antebraco)
 
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
@@ -116,6 +121,7 @@ class TreinoBActivity : AppCompatActivity() {
                 "SupinoRetoBarra" to SupinoRetoBarra,
                 "CrossOver" to CrossOver,
                 "CrucifixoMaquina" to CrucifixoMaquina,
+                "Antebraco" to Antebraco,
                 "UserId" to userId,
                 "Data" to Date()
             )
@@ -141,18 +147,21 @@ class TreinoBActivity : AppCompatActivity() {
                             val existingSupinoRetoBarra = document.getString("SupinoRetoBarra") ?: ""
                             val existingCrossOver = document.getString("CrossOver") ?: ""
                             val existingCrucifixoMaquina = document.getString("CrucifixoMaquina") ?: ""
+                            val existingAntebraco = document.getString("Antebraco") ?: ""
 
                             val (existingSupinoInclinadoHalterFirst, existingSupinoInclinadoHalterSecond) = parseNumbers(existingSupinoInclinadoHalter)
                             val (existingSupinoInclinadoBarraFirst, existingSupinoInclinadoBarraSecond) = parseNumbers(existingSupinoInclinadoBarra)
                             val (existingSupinoRetoBarraFirst, existingSupinoRetoBarraSecond) = parseNumbers(existingSupinoRetoBarra)
                             val (existingCrossOverFirst, existingCrossOverSecond) = parseNumbers(existingCrossOver)
                             val (existingCrucifixoMaquinaFirst, existingCrucifixoMaquinaSecond) = parseNumbers(existingCrucifixoMaquina)
+                            val (existingAntebracoFirst, existingAntebracoSecond) = parseNumbers(existingAntebraco)
 
                             var novoSupinoInclinadoHalter = existingSupinoInclinadoHalter
                             var novoSupinoInclinadoBarra = existingSupinoInclinadoBarra
                             var novoSupinoRetoBarra= existingSupinoRetoBarra
                             var novoCrossOver = existingCrossOver
                             var novoCrucifixoMaquina = existingCrucifixoMaquina
+                            var novoAntebraco = existingAntebraco
 
                             // Agora verifica corretamente se deve atualizar com base no novo valor
                             if (shouldUpdate(existingSupinoInclinadoHalterFirst, existingSupinoInclinadoHalterSecond, SupinoInclinadoHalterFirst, SupinoInclinadoHalterSecond)) {
@@ -178,13 +187,19 @@ class TreinoBActivity : AppCompatActivity() {
                                 )){
                                 novoCrucifixoMaquina = CrucifixoMaquina
                             }
+                            if(shouldUpdate(
+                                    existingAntebracoFirst, existingAntebracoSecond, AntebracoFirst, AntebracoSecond
+                                )){
+                                novoAntebraco = Antebraco
+                            }
 
                                 val updatedData = mapOf(
                                     "SupinoInclinadoHalter" to novoSupinoInclinadoHalter,
                                     "SupinoInclinadoBarra" to novoSupinoInclinadoBarra,
                                     "SupinoRetoBarra" to novoSupinoRetoBarra,
                                     "CrossOver" to novoCrossOver,
-                                    "CrucifixoMaquina" to novoCrucifixoMaquina
+                                    "CrucifixoMaquina" to novoCrucifixoMaquina,
+                                    "Antebraco" to Antebraco
                                 )
 
                                 db.collection("WorkoutB")
