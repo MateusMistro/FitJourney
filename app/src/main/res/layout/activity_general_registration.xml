@@ -9,21 +9,15 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:orientation="horizontal"
-        android:background="@color/corPrincipal">
-
-        <ImageView
-            android:id="@+id/btnVoltar"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/img_voltar"
-            android:layout_gravity="center"/>
+        android:background="@color/corPrincipal"
+        android:gravity="center">
 
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:src="@drawable/logo_preto"
-            android:layout_marginStart="130dp"/>
+         />
 
     </LinearLayout>
 
@@ -88,7 +82,7 @@
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
         android:layout_marginTop="60dp"
-        android:text="Salvar"
+        android:text="Avançar"
         android:textSize="25dp"/>
 
 </LinearLayout>

@@ -13,6 +13,9 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
+            android:name=".TrainingRegistrationActivity"
+            android:exported="false" />
+        <activity
             android:name=".GymsNameActivity"
             android:exported="false" />
         <activity
