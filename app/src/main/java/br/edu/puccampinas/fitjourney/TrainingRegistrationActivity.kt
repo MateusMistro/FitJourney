@@ -152,7 +152,7 @@ class TrainingRegistrationActivity : AppCompatActivity() {
             "exercicios" to listaExercicios
         )
 
-        db.collection("treinos")
+        db.collection("trainings")
             .add(treinoData)
             .addOnSuccessListener {
                 Toast.makeText(this, "Treino salvo com sucesso", Toast.LENGTH_SHORT).show()

@@ -9,17 +9,24 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:orientation="horizontal"
-        android:background="@color/corPrincipal"
-        android:gravity="center">
+        android:background="@color/corPrincipal">
+
+        <ImageView
+            android:id="@+id/btnVoltar"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/img_voltar"
+            android:layout_gravity="center"/>
 
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
             android:src="@drawable/logo_preto"
-         />
+            android:layout_marginLeft="130dp"/>
 
     </LinearLayout>
+
 
     <TextView
         android:layout_width="wrap_content"

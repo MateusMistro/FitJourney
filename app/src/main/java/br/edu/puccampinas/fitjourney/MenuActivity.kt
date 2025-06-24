@@ -49,7 +49,7 @@ class MenuActivity : AppCompatActivity() {
                     .get()
                     .addOnSuccessListener { documents ->
                         if (!documents.isEmpty) {
-                            val intent = Intent(this, GeneralRegistrationActivity::class.java)
+                            val intent = Intent(this, GymsActivity::class.java)
                             startActivity(intent)
                         } else {
                             val intent = Intent(this, GeneralRegistrationActivity::class.java)

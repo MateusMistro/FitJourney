@@ -24,6 +24,11 @@ class GeneralRegistrationActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
+        binding.btnVoltar.setOnClickListener {
+            startActivity(Intent(this,MenuActivity::class.java))
+            finish()
+        }
+
         binding.btnSave.setOnClickListener {
             val quantidadeTreinos = binding.Treinos.text.toString()
             val quantidadeAcademias = binding.Academias.text.toString()
