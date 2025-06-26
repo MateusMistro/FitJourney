@@ -43,6 +43,10 @@ class TrainingsActivity : AppCompatActivity() {
             startActivity(Intent(this,GymsActivity::class.java))
             finish()
         }
+
+        binding.menu.setOnClickListener {
+            goToMenu()
+        }
     }
 
     private fun buscarTreinosDoUsuario() {
@@ -98,7 +102,7 @@ class TrainingsActivity : AppCompatActivity() {
             button.textSize = 25f
 
             button.setOnClickListener {
-                val intent = Intent(this, MenuActivity::class.java)
+                val intent = Intent(this, TrainingDetailActivity::class.java)
                 intent.putExtra("academia", academiaSelecionada)
                 intent.putExtra("treino", treino)
                 startActivity(intent)
@@ -110,5 +114,10 @@ class TrainingsActivity : AppCompatActivity() {
 
     private fun Int.dpToPx(): Int {
         return (this * resources.displayMetrics.density).toInt()
+    }
+
+    private fun goToMenu(){
+        startActivity(Intent(this,MenuActivity::class.java))
+        finish()
     }
 }

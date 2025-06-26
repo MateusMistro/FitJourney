@@ -42,5 +42,14 @@ class GeneralRegistrationActivity : AppCompatActivity() {
                 Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
             }
         }
+
+        binding.menu.setOnClickListener {
+            goToMenu()
+        }
+    }
+
+    private fun goToMenu(){
+        startActivity(Intent(this,MenuActivity::class.java))
+        finish()
     }
 }

@@ -38,6 +38,10 @@ class MenuActivity : AppCompatActivity() {
             }
         }
 
+        binding.menu.setOnClickListener {
+            goToMenu()
+        }
+
         // Obtém o ID do usuário conectado
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
@@ -77,5 +81,10 @@ class MenuActivity : AppCompatActivity() {
         snackbar.setBackgroundTint(Color.parseColor("#78F37A"))
         snackbar.setTextColor(Color.parseColor("#FFFFFF"))
         snackbar.show()
+    }
+
+    private fun goToMenu(){
+        startActivity(Intent(this,MenuActivity::class.java))
+        finish()
     }
 }

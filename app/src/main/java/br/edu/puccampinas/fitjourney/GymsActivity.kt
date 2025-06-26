@@ -34,6 +34,10 @@ class GymsActivity : AppCompatActivity() {
             startActivity(Intent(this,MenuActivity::class.java))
             finish()
         }
+
+        binding.menu.setOnClickListener {
+            goToMenu()
+        }
     }
 
     private fun carregarAcademiasDoUsuario() {
@@ -98,5 +102,10 @@ class GymsActivity : AppCompatActivity() {
 
     private fun Int.dpToPx(): Int {
         return (this * resources.displayMetrics.density).toInt()
+    }
+
+    private fun goToMenu(){
+        startActivity(Intent(this,MenuActivity::class.java))
+        finish()
     }
 }
