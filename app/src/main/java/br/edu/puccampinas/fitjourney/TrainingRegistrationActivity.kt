@@ -82,7 +82,7 @@ class TrainingRegistrationActivity : AppCompatActivity() {
 
         // Campo Peso
         val editPeso = EditText(this).apply {
-            hint = "Peso"
+            hint = "Peso(Kg)"
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
             layoutParams = LinearLayout.LayoutParams(0, 50.dpToPx(), 1f).apply {
                 marginEnd = 8.dpToPx()

@@ -48,8 +48,8 @@ class MenuActivity : AppCompatActivity() {
 
         binding.btnTreinos.setOnClickListener {
             if (userId != null) {
-                db.collection("gyms")
-                    .whereEqualTo("UserId", userId)
+                db.collection("trainings")
+                    .whereEqualTo("userId", userId)
                     .get()
                     .addOnSuccessListener { documents ->
                         if (!documents.isEmpty) {
@@ -66,6 +66,10 @@ class MenuActivity : AppCompatActivity() {
             } else {
                 Toast.makeText(this, "Usuário não autenticado", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.btnDietas.setOnClickListener {
+            startActivity(Intent(this,DietsActivity::class.java))
         }
     }
 

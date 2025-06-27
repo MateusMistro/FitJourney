@@ -82,7 +82,7 @@ class TrainingDetailActivity : AppCompatActivity() {
 
         val container = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundResource(R.drawable.bg_exercicio_card)
+            setBackgroundResource(R.drawable.borda)
             setPadding(24, 24, 24, 24)
 
             val params = LinearLayout.LayoutParams(
@@ -122,8 +122,6 @@ class TrainingDetailActivity : AppCompatActivity() {
         // Adiciona o container ao layout principal
         binding.layoutExercicios.addView(container)
     }
-
-
 
     private fun salvar() {
         db.collection("trainings")
