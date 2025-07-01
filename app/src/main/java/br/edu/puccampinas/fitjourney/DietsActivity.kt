@@ -69,9 +69,8 @@ class DietsActivity : AppCompatActivity() {
                 fileRef.downloadUrl.addOnSuccessListener { url ->
 
                     val fileNameOriginal = getFileNameFromUri(uri)
-                    val dataAtual = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+                    val dataAtual = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR")).format(Date())
                     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "sem_usuario"
-
 
                     // Salva metadados no Firestore na coleção "diets"
                     val pdfInfo = hashMapOf(
@@ -105,7 +104,8 @@ class DietsActivity : AppCompatActivity() {
             .whereEqualTo("UserId", userId) // só PDFs do usuário atual
             .get()
             .addOnSuccessListener { documents ->
-                for (doc in documents) {
+                val docsList = documents.documents.reversed()
+                for (doc in docsList) {
                     val nome = doc.getString("nome") ?: "Sem nome"
                     val url = doc.getString("url") ?: ""
                     val data = doc.getString("data") ?: "Data desconhecida"

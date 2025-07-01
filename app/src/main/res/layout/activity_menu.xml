@@ -84,9 +84,9 @@
             android:layout_marginLeft="40dp"
             android:layout_gravity="center"
             android:backgroundTint="@color/corPrincipal"
-            android:text="avaliação antropométrica"
+            android:text="avaliação\nantropométrica"
             android:background="@drawable/borda"
-            android:textSize="15dp"/>
+            android:textSize="20dp"/>
 
         <Button
             android:id="@+id/btnFotos"

@@ -71,6 +71,10 @@ class MenuActivity : AppCompatActivity() {
         binding.btnDietas.setOnClickListener {
             startActivity(Intent(this,DietsActivity::class.java))
         }
+
+        binding.btnFotos.setOnClickListener {
+            startActivity(Intent(this,PhotosActivity::class.java))
+        }
     }
 
     private fun mensagemNegativa(view: View, mensagem: String) {
