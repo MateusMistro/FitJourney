@@ -19,7 +19,7 @@ class AcademiasActivity : AppCompatActivity() {
 
         val treino = intent.getStringExtra("treino")
 
-        binding.btnVoltar.setOnClickListener {
+        binding.comeBack.setOnClickListener {
             startActivity(Intent(this,TreinosActivity::class.java))
             finish()
         }

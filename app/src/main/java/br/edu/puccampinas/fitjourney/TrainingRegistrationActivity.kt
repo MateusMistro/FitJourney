@@ -38,18 +38,18 @@ class TrainingRegistrationActivity : AppCompatActivity() {
 
         configurarTela()
 
-        binding.btnAdicionarExercicio.setOnClickListener {
+        binding.btnAddExercise.setOnClickListener {
             adicionarCampoExercicio()
         }
 
-        binding.btnSalvarTreino.setOnClickListener {
+        binding.btnSaveTraining.setOnClickListener {
             salvarTreino()
         }
     }
 
     private fun configurarTela() {
-        binding.txtTitulo.text = "Academia: ${academias[academiaAtual]} - Treino ${'A' + treinoAtual}"
-        binding.layoutExercicios.removeAllViews()
+        binding.txtTitle.text = "Academia: ${academias[academiaAtual]} - Treino ${'A' + treinoAtual}"
+        binding.layoutExercises.removeAllViews()
         exerciciosList.clear()
         adicionarCampoExercicio() // Começa com pelo menos um
     }
@@ -109,7 +109,7 @@ class TrainingRegistrationActivity : AppCompatActivity() {
         layoutHorizontal.addView(editPeso)
         layoutHorizontal.addView(editReps)
 
-        binding.layoutExercicios.addView(layoutHorizontal)
+        binding.layoutExercises.addView(layoutHorizontal)
 
         exerciciosList.add(Triple(editNome, editPeso, editReps))
     }
@@ -124,24 +124,43 @@ class TrainingRegistrationActivity : AppCompatActivity() {
             return
         }
 
-        val listaExercicios = exerciciosList.mapNotNull { (nomeField, pesoField, repField) ->
-            val nome = nomeField.text.toString().trim()
-            val peso = pesoField.text.toString().trim().toIntOrNull()
-            val repeticoes = repField.text.toString().trim().toIntOrNull()
+        val listaExercicios = mutableListOf<Map<String, Any>>()
 
-            if (nome.isNotEmpty() && peso != null && repeticoes != null) {
+        for ((index, triple) in exerciciosList.withIndex()) {
+            val nome = triple.first.text.toString().trim()
+            val pesoStr = triple.second.text.toString().trim()
+            val repsStr = triple.third.text.toString().trim()
+
+            // Verifica se todos os campos estão preenchidos
+            if (nome.isEmpty() || pesoStr.isEmpty() || repsStr.isEmpty()) {
+                Toast.makeText(this, "Preencha todos os campos do exercício ${index + 1}", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // Converte peso e repetições em número
+            val peso = pesoStr.toIntOrNull()
+            val repeticoes = repsStr.toIntOrNull()
+
+            if (peso == null || repeticoes == null || peso <= 0 || repeticoes <= 0) {
+                Toast.makeText(
+                    this,
+                    "Insira valores válidos (números maiores que zero) no exercício ${index + 1}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
+
+            listaExercicios.add(
                 mapOf(
                     "nome" to nome,
                     "peso" to peso,
                     "repeticoes" to repeticoes
                 )
-            } else {
-                null
-            }
+            )
         }
 
         if (listaExercicios.isEmpty()) {
-            Toast.makeText(this, "Adicione pelo menos um exercício completo", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Adicione pelo menos um exercício", Toast.LENGTH_SHORT).show()
             return
         }
 
@@ -159,7 +178,7 @@ class TrainingRegistrationActivity : AppCompatActivity() {
                 avancarTreinoOuAcademia()
             }
             .addOnFailureListener { e ->
-                Toast.makeText(this, "Erro: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Erro ao salvar treino: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 

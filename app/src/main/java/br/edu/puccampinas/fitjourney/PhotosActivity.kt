@@ -44,7 +44,7 @@ class PhotosActivity : AppCompatActivity() {
         binding = ActivityPhotosBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.btnVoltar.setOnClickListener {
+        binding.comeBack.setOnClickListener {
             finish()
         }
 
@@ -56,7 +56,7 @@ class PhotosActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
 
-        layoutListaFotos = binding.layoutFotos
+        layoutListaFotos = binding.layoutPhotos
         val btnUpload = binding.btnAdd
 
         btnUpload.setOnClickListener {

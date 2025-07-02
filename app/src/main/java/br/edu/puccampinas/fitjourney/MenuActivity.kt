@@ -46,7 +46,7 @@ class MenuActivity : AppCompatActivity() {
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
 
-        binding.btnTreinos.setOnClickListener {
+        binding.btnTraining.setOnClickListener {
             if (userId != null) {
                 db.collection("trainings")
                     .whereEqualTo("userId", userId)
@@ -68,12 +68,16 @@ class MenuActivity : AppCompatActivity() {
             }
         }
 
-        binding.btnDietas.setOnClickListener {
+        binding.btnDiets.setOnClickListener {
             startActivity(Intent(this,DietsActivity::class.java))
         }
 
-        binding.btnFotos.setOnClickListener {
+        binding.btnPhotos.setOnClickListener {
             startActivity(Intent(this,PhotosActivity::class.java))
+        }
+
+        binding.btnAnthropometricAssessment.setOnClickListener {
+            startActivity(Intent(this,AnthropometricAssessmentActivity::class.java))
         }
     }
 

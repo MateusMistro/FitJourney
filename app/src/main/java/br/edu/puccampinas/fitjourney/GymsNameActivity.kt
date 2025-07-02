@@ -30,7 +30,7 @@ class GymsNameActivity : AppCompatActivity() {
         val quantidadeTreinos = intent.getStringExtra("quantidadeTreinos")
         val quantidadeAcademias = intent.getStringExtra("quantidadeAcademias")
         val numAcademias = quantidadeAcademias?.toIntOrNull() ?: 0
-        val layout = binding.Academias
+        val layout = binding.Gyms
 
         for (i in 1..numAcademias) {
             val editText = EditText(this)
@@ -59,8 +59,16 @@ class GymsNameActivity : AppCompatActivity() {
 
         // Clique no botão salvar
         binding.btnSave.setOnClickListener {
+            val camposPreenchidos = editTextList.all { it.text.toString().trim().isNotEmpty() }
+
+            if (!camposPreenchidos) {
+                Toast.makeText(this, "Preencha todos os nomes das academias", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             salvarNoFirestore(quantidadeTreinos)
         }
+
     }
 
     private fun salvarNoFirestore(quantidadeTreinos: String?) {

@@ -12,7 +12,7 @@
         android:background="@color/corPrincipal">
 
         <ImageView
-            android:id="@+id/btnVoltar"
+            android:id="@+id/comeBack"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/img_voltar"
@@ -30,11 +30,11 @@
 
     <!-- Título -->
     <TextView
-        android:id="@+id/treinoTv"
+        android:id="@+id/trainingTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Editar treino"
-        android:textSize="28sp"
+        android:text="@string/editar_treino"
+        android:textSize="30dp"
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:layout_marginTop="30dp" />
@@ -48,7 +48,7 @@
         android:layout_marginTop="25dp">
 
         <LinearLayout
-            android:id="@+id/layoutExercicios"
+            android:id="@+id/layoutExercises"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -57,13 +57,13 @@
     </ScrollView>
 
     <Button
-        android:id="@+id/btnSalvar"
+        android:id="@+id/btnSave"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:background="@drawable/borda"
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
-        android:text="Salvar alterações"
-        android:textSize="20dp"
+        android:text="@string/salvar_alteracoes"
+        android:textSize="17dp"
         android:layout_marginBottom="50dp"/>
 </LinearLayout>

@@ -33,7 +33,7 @@ class TrainingDetailActivity : AppCompatActivity() {
         val academia = intent.getStringExtra("academia")
         val letraTreino = intent.getStringExtra("treino")
 
-        binding.treinoTv.text = "Treino " + letraTreino
+        binding.trainingTv.text = "Treino " + letraTreino
 
         if (userId == null || academia == null || letraTreino == null) {
             mensagemNegativa("Dados insuficientes.")
@@ -64,11 +64,11 @@ class TrainingDetailActivity : AppCompatActivity() {
                 }
             }
 
-        binding.btnSalvar.setOnClickListener {
+        binding.btnSave.setOnClickListener {
             salvar()
         }
 
-        binding.btnVoltar.setOnClickListener {
+        binding.comeBack.setOnClickListener {
             finish()
         }
 
@@ -120,7 +120,7 @@ class TrainingDetailActivity : AppCompatActivity() {
         container.addView(repsInput)
 
         // Adiciona o container ao layout principal
-        binding.layoutExercicios.addView(container)
+        binding.layoutExercises.addView(container)
     }
 
     private fun salvar() {
@@ -134,8 +134,23 @@ class TrainingDetailActivity : AppCompatActivity() {
 
                 for ((index, triple) in camposExercicios.withIndex()) {
                     val nome = triple.first
-                    val novoPeso = triple.second.text.toString().toIntOrNull() ?: 0
-                    val novasReps = triple.third.text.toString().toIntOrNull() ?: 0
+                    val pesoStr = triple.second.text.toString().trim()
+                    val repsStr = triple.third.text.toString().trim()
+
+                    // Verificação se os campos estão preenchidos
+                    if (pesoStr.isEmpty() || repsStr.isEmpty()) {
+                        mensagemNegativa("Preencha todos os campos de peso e repetições.")
+                        return@addOnSuccessListener
+                    }
+
+                    // Verificação se são números válidos
+                    val novoPeso = pesoStr.toIntOrNull()
+                    val novasReps = repsStr.toIntOrNull()
+
+                    if (novoPeso == null || novasReps == null) {
+                        mensagemNegativa("Insira apenas números válidos.")
+                        return@addOnSuccessListener
+                    }
 
                     val original = exerciciosOriginais.getOrNull(index)
                     val pesoAntigo = (original?.get("peso") as? Long)?.toInt() ?: 0
@@ -167,6 +182,7 @@ class TrainingDetailActivity : AppCompatActivity() {
                 mensagemNegativa("Erro ao buscar treino atual: ${it.message}")
             }
     }
+
 
     private fun mensagemNegativa(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)

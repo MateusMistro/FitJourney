@@ -35,14 +35,14 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        binding.etCriar.setOnClickListener {
+        binding.etCreate.setOnClickListener {
             startActivity(Intent(this,CreateAccountActivity::class.java))
         }
 
-        binding.btnEntrar.setOnClickListener {
+        binding.btnEnter.setOnClickListener {
 
             val email = binding.etEmail.text.toString()
-            val senha = binding.etSenha.text.toString()
+            val senha = binding.etPassword.text.toString()
             if (email.isNullOrEmpty() || senha.isNullOrEmpty()) {
                 when {
                     email.isEmpty() -> {
@@ -84,8 +84,6 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
             }
-
-
         }
     }
 

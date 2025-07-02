@@ -15,6 +15,9 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
+            android:name=".AnthropometricAssessmentActivity"
+            android:exported="false" />
+        <activity
             android:name=".PhotoFullScreenActivity"
             android:exported="false" />
         <activity

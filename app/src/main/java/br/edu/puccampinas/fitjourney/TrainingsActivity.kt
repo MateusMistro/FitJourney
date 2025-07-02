@@ -39,7 +39,7 @@ class TrainingsActivity : AppCompatActivity() {
 
         buscarTreinosDoUsuario()
 
-        binding.btnVoltar.setOnClickListener {
+        binding.comeBack.setOnClickListener {
             startActivity(Intent(this,GymsActivity::class.java))
             finish()
         }
@@ -82,7 +82,7 @@ class TrainingsActivity : AppCompatActivity() {
     }
 
     private fun criarBotoesParaTreinos(treinos: Set<String>) {
-        val layout = binding.layoutTreinos
+        val layout = binding.layoutTrainings
 
         for (treino in treinos.sorted()) {
             val button = Button(this)

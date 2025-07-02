@@ -13,6 +13,7 @@
         android:gravity="center">
 
         <ImageView
+            android:id="@+id/menu"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -24,15 +25,16 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Qual o nome da(s) academia(s)"
-        android:textSize="25dp"
+        android:text="@string/qual_nome_academia"
+        android:textSize="30dp"
+        android:gravity="center"
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"/>
+        />
 
     <LinearLayout
-        android:id="@+id/Academias"
+        android:id="@+id/Gyms"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -46,7 +48,7 @@
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
         android:layout_marginTop="60dp"
-        android:text="Avançar"
+        android:text="@string/avancar"
         android:textSize="25dp"/>
 
 </LinearLayout>

@@ -12,7 +12,7 @@
         android:background="@color/corPrincipal">
 
         <ImageView
-            android:id="@+id/btnVoltar"
+            android:id="@+id/comeBack"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/img_voltar"
@@ -32,7 +32,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Faça seu registro"
+        android:text="@string/faca_registro"
         android:textSize="30dp"
         android:textColor="@color/black"
         android:layout_gravity="center"
@@ -41,17 +41,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quantos treinos você possui?"
+        android:text="@string/quantos_treinos"
         android:textSize="20dp"
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"/>
 
     <EditText
-        android:id="@+id/Treinos"
+        android:id="@+id/Training"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:hint="Ex: 5"
+        android:hint="@string/ex_5"
         android:background="@drawable/borda"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
@@ -63,17 +63,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Quantas academias você frequenta?"
+        android:text="@string/quantas_academias"
         android:textSize="20dp"
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"/>
 
     <EditText
-        android:id="@+id/Academias"
+        android:id="@+id/Gyms"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:hint="Ex: 2"
+        android:hint="@string/ex_2"
         android:background="@drawable/borda"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
@@ -90,7 +90,7 @@
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
         android:layout_marginTop="60dp"
-        android:text="Avançar"
+        android:text="@string/avancar"
         android:textSize="25dp"/>
 
 </LinearLayout>

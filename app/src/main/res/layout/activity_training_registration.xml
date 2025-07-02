@@ -16,48 +16,46 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:src="@drawable/logo_preto"
-            />
+            android:src="@drawable/logo_preto" />
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/txtTitulo"
+        android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Academia: - Treino A"
-        android:textSize="25dp"
+        android:text="@string/academia_treino_A"
+        android:textSize="30dp"
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:layout_marginTop="30dp" />
 
     <LinearLayout
-        android:id="@+id/layoutExercicios"
+        android:id="@+id/layoutExercises"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
     <Button
-        android:id="@+id/btnAdicionarExercicio"
+        android:id="@+id/btnAddExercise"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:text="Adicionar Exercício"
+        android:text="@string/adicionar_exercicio"
         android:background="@drawable/borda"
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:textSize="17dp"/>
+        android:textSize="16dp"/>
 
     <Button
-        android:id="@+id/btnSalvarTreino"
+        android:id="@+id/btnSaveTraining"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:text="Salvar Treino"
+        android:text="@string/salvar_treino"
         android:background="@drawable/borda"
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
         android:textSize="17dp"/>
-
 
 </LinearLayout>

@@ -24,20 +24,27 @@ class GeneralRegistrationActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
 
-        binding.btnVoltar.setOnClickListener {
+        binding.comeBack.setOnClickListener {
             startActivity(Intent(this,MenuActivity::class.java))
             finish()
         }
 
         binding.btnSave.setOnClickListener {
-            val quantidadeTreinos = binding.Treinos.text.toString()
-            val quantidadeAcademias = binding.Academias.text.toString()
+            val quantidadeTreinos = binding.Training.text.toString()
+            val quantidadeAcademias = binding.Gyms.text.toString()
+
+            val treinosNumero = quantidadeTreinos.toIntOrNull()
+            val academiasNumero = quantidadeAcademias.toIntOrNull()
 
             if (quantidadeTreinos.isNotEmpty() && quantidadeAcademias.isNotEmpty()) {
-                val intent = Intent(this, GymsNameActivity::class.java)
-                intent.putExtra("quantidadeTreinos", quantidadeTreinos)
-                intent.putExtra("quantidadeAcademias", quantidadeAcademias)
-                startActivity(intent)
+                if (treinosNumero != null && academiasNumero != null) {
+                    val intent = Intent(this, GymsNameActivity::class.java)
+                    intent.putExtra("quantidadeTreinos", quantidadeTreinos)
+                    intent.putExtra("quantidadeAcademias", quantidadeAcademias)
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "Insira apenas números válidos!", Toast.LENGTH_SHORT).show()
+                }
             } else {
                 Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
             }

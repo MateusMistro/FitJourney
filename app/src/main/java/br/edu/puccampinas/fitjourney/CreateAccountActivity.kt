@@ -35,11 +35,11 @@ class CreateAccountActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
 
         // Configuração do clique do botão de efetuar cadastro
-        binding.btnCriar.setOnClickListener {
+        binding.btnCreate.setOnClickListener {
             val email = binding.etEmail.text.toString()
-            val senha = binding.etSenha.text.toString()
-            val confirmarSenha = binding.etConfirmarSenha.text.toString()
-            val nome = binding.etNome.text.toString()
+            val senha = binding.etPassword.text.toString()
+            val confirmarSenha = binding.etConfirmPassword.text.toString()
+            val nome = binding.etName.text.toString()
 
             // Verificação dos campos obrigatórios e das regras de validação
             when {

@@ -21,11 +21,12 @@ class PhotoFullScreenActivity : AppCompatActivity() {
             Glide.with(this).load(url).into(imageView)
         }
 
-        val btnBack = findViewById<ImageView>(R.id.btnBack)
+        val btnBack = findViewById<ImageView>(R.id.comeBack)
         btnBack.setOnClickListener {
             finish()
         }
     }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
@@ -35,6 +36,4 @@ class PhotoFullScreenActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-
 }

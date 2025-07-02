@@ -12,7 +12,7 @@
         android:background="@color/corPrincipal">
 
         <ImageView
-            android:id="@+id/btnVoltar"
+            android:id="@+id/comeBack"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/img_voltar"
@@ -29,10 +29,10 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/txtTitulo"
+        android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Selecione um teino"
+        android:text="@string/selecione_um_treino"
         android:textSize="30dp"
         android:textColor="@color/black"
         android:layout_gravity="center"
@@ -42,18 +42,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingHorizontal="24dp">
+        android:paddingHorizontal="24dp"
+        android:layout_marginTop="25dp">
 
         <LinearLayout
-            android:id="@+id/layoutTreinos"
+            android:id="@+id/layoutTrainings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingBottom="24dp"/>
     </ScrollView>
-
-
-
-
 
 </LinearLayout>

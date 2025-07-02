@@ -31,7 +31,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FitJourney"
+        android:text="@string/FitJourney"
         android:shadowColor="@color/black"
         android:shadowRadius="3"
         android:layout_gravity="center"
@@ -48,24 +48,24 @@
         android:layout_marginTop="100dp">
 
         <Button
-            android:id="@+id/btnTreinos"
+            android:id="@+id/btnTraining"
             android:layout_width="150dp"
             android:layout_height="100dp"
             android:layout_marginLeft="40dp"
             android:layout_gravity="center"
             android:backgroundTint="@color/corPrincipal"
-            android:text="treinos"
+            android:text="@string/treinos"
             android:background="@drawable/borda"
             android:textSize="20dp"/>
 
         <Button
-            android:id="@+id/btnDietas"
+            android:id="@+id/btnDiets"
             android:layout_width="150dp"
             android:layout_height="100dp"
             android:layout_marginLeft="30dp"
             android:layout_gravity="center"
             android:backgroundTint="@color/corPrincipal"
-            android:text="dietas"
+            android:text="@string/dietas"
             android:background="@drawable/borda"
             android:textSize="20dp"/>
 
@@ -78,24 +78,24 @@
         android:background="@color/white">
 
         <Button
-            android:id="@+id/btnAvaliacaoAntropometrica"
+            android:id="@+id/btnAnthropometricAssessment"
             android:layout_width="150dp"
             android:layout_height="100dp"
             android:layout_marginLeft="40dp"
             android:layout_gravity="center"
             android:backgroundTint="@color/corPrincipal"
-            android:text="avaliação\nantropométrica"
+            android:text="@string/avaliacao_antropometrica_n"
             android:background="@drawable/borda"
             android:textSize="20dp"/>
 
         <Button
-            android:id="@+id/btnFotos"
+            android:id="@+id/btnPhotos"
             android:layout_width="150dp"
             android:layout_height="100dp"
             android:layout_marginLeft="30dp"
             android:layout_gravity="center"
             android:backgroundTint="@color/corPrincipal"
-            android:text="fotos"
+            android:text="@string/fotos"
             android:background="@drawable/borda"
             android:textSize="20dp"/>
 
@@ -114,6 +114,5 @@
         android:background="@color/corPrincipal">
 
     </LinearLayout>
-
 
 </LinearLayout>

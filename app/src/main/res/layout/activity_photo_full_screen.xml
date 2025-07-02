@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/btnBack"
+        android:id="@+id/comeBack"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_margin="16dp"

@@ -35,7 +35,7 @@ class DietsActivity : AppCompatActivity() {
 
         listarPDFs()
 
-        binding.btnVoltar.setOnClickListener {
+        binding.comeBack.setOnClickListener {
             finish()
         }
 
@@ -120,7 +120,7 @@ class DietsActivity : AppCompatActivity() {
     }
 
     fun mostrarListaPDFs(lista: List<Triple<String, String, String>>) {
-        val layout = binding.layoutDietas
+        val layout = binding.layoutDiets
         layout.removeAllViews()
 
         for ((nome, url, data) in lista) {

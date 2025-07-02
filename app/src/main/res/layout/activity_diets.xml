@@ -12,7 +12,7 @@
         android:background="@color/corPrincipal">
 
         <ImageView
-            android:id="@+id/btnVoltar"
+            android:id="@+id/comeBack"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/img_voltar"
@@ -33,8 +33,8 @@
         android:id="@+id/dietTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Dietas"
-        android:textSize="28sp"
+        android:text="@string/dietas"
+        android:textSize="30dp"
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:layout_marginTop="30dp" />
@@ -48,7 +48,7 @@
         android:layout_marginTop="25dp">
 
         <LinearLayout
-            android:id="@+id/layoutDietas"
+            android:id="@+id/layoutDiets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -63,7 +63,7 @@
         android:background="@drawable/borda"
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
-        android:text="Adicionar nova dieta"
+        android:text="@string/adicionar_dieta"
         android:textSize="15dp"
         android:layout_marginBottom="50dp"/>
 </LinearLayout>

@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FitJourney"
+        android:text="@string/FitJourney"
         android:layout_gravity="center"
         android:layout_marginTop="70dp"
         android:textSize="40dp"
@@ -24,17 +24,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Crie sua conta"
+        android:text="@string/crie_sua_conta"
         android:layout_gravity="center"
         android:textSize="30dp"
         android:textStyle="normal"
         android:textColor="@color/black"/>
 
     <EditText
-        android:id="@+id/etNome"
+        android:id="@+id/etName"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:hint="Nome"
+        android:hint="@string/nome"
         android:background="@drawable/borda"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
@@ -47,7 +47,7 @@
         android:id="@+id/etEmail"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:hint="Email"
+        android:hint="@string/email"
         android:background="@drawable/borda"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
@@ -57,10 +57,10 @@
         />
 
     <EditText
-        android:id="@+id/etSenha"
+        android:id="@+id/etPassword"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:hint="Senha"
+        android:hint="@string/senha"
         android:background="@drawable/borda"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
@@ -70,10 +70,10 @@
         />
 
     <EditText
-        android:id="@+id/etConfirmarSenha"
+        android:id="@+id/etConfirmPassword"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:hint="Confirmar senha"
+        android:hint="@string/confirmar_senha"
         android:background="@drawable/borda"
         android:layout_marginTop="20dp"
         android:layout_gravity="center"
@@ -87,20 +87,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="clique aqui para fazer login"
+        android:text="@string/clique_login"
         android:textColor="@color/black"
         android:textSize="15dp"
         android:layout_marginTop="10dp"/>
 
     <Button
-        android:id="@+id/btnCriar"
+        android:id="@+id/btnCreate"
         android:layout_width="200dp"
         android:layout_height="50dp"
-        android:text="Criar Conta"
+        android:text="@string/criar_conta"
         android:textColor="@color/black"
         android:background="@drawable/borda"
         android:layout_gravity="center"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="40dp" />
 
-        />
 </LinearLayout>

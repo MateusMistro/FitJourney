@@ -30,7 +30,7 @@ class GymsActivity : AppCompatActivity() {
 
         carregarAcademiasDoUsuario()
 
-        binding.btnVoltar.setOnClickListener {
+        binding.comeBack.setOnClickListener {
             startActivity(Intent(this,MenuActivity::class.java))
             finish()
         }
@@ -97,7 +97,7 @@ class GymsActivity : AppCompatActivity() {
             }
         }
 
-        binding.layoutBotoes.addView(botao)
+        binding.layoutButtons.addView(botao)
     }
 
     private fun Int.dpToPx(): Int {
