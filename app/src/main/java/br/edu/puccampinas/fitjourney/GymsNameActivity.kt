@@ -1,17 +1,15 @@
 package br.edu.puccampinas.fitjourney
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.EditText
 import android.widget.LinearLayout
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import br.edu.puccampinas.fitjourney.databinding.ActivityGymsNameBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -21,18 +19,22 @@ private lateinit var auth: FirebaseAuth
 
 class GymsNameActivity : AppCompatActivity() {
     private val editTextList = mutableListOf<EditText>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityGymsNameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
-        val quantidadeTreinos = intent.getStringExtra("quantidadeTreinos")
-        val quantidadeAcademias = intent.getStringExtra("quantidadeAcademias")
-        val numAcademias = quantidadeAcademias?.toIntOrNull() ?: 0
+
+        val trainingQuantity = intent.getStringExtra("quantidadeTreinos")
+        val gymsQuantity = intent.getStringExtra("quantidadeAcademias")
+        val gymsNumber = gymsQuantity?.toIntOrNull() ?: 0
         val layout = binding.Gyms
 
-        for (i in 1..numAcademias) {
+        for (i in 1..gymsNumber) {
             val editText = EditText(this)
             editText.hint = "Nome da academia $i"
 
@@ -59,29 +61,29 @@ class GymsNameActivity : AppCompatActivity() {
 
         // Clique no botão salvar
         binding.btnSave.setOnClickListener {
-            val camposPreenchidos = editTextList.all { it.text.toString().trim().isNotEmpty() }
+            val filledFields = editTextList.all { it.text.toString().trim().isNotEmpty() }
 
-            if (!camposPreenchidos) {
-                Toast.makeText(this, "Preencha todos os nomes das academias", Toast.LENGTH_SHORT).show()
+            if (!filledFields) {
+                negativeMessage("Preencha todos os nomes das academias")
                 return@setOnClickListener
             }
 
-            salvarNoFirestore(quantidadeTreinos)
+            saveDataInFirestore(trainingQuantity)
         }
 
     }
 
-    private fun salvarNoFirestore(quantidadeTreinos: String?) {
+    private fun saveDataInFirestore(trainingQuantity: String?) {
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
 
         if (userId != null) {
-            val nomesAcademias = editTextList.map { it.text.toString().trim() }
+            val gymsName = editTextList.map { it.text.toString().trim() }
 
             // Verifica se algum campo está vazio
-            val algumCampoVazio = nomesAcademias.any { it.isEmpty() }
-            if (algumCampoVazio) {
-                Toast.makeText(this, "Preencha todos os nomes das academias", Toast.LENGTH_SHORT).show()
+            val someEmptyField = gymsName.any { it.isEmpty() }
+            if (someEmptyField) {
+                negativeMessage("Preencha todos os nomes das academias")
                 return
             }
 
@@ -91,34 +93,48 @@ class GymsNameActivity : AppCompatActivity() {
             )
 
             // Adiciona os campos academia1, academia2, etc.
-            for ((index, nome) in nomesAcademias.withIndex()) {
+            for ((index, name) in gymsName.withIndex()) {
                 val key = "academia${index + 1}"
-                gymData[key] = nome
+                gymData[key] = name
             }
 
             // Salva no Firestore
             db.collection("gyms")
                 .add(gymData)
                 .addOnSuccessListener {
-                    Toast.makeText(this, "Dados salvos com sucesso!", Toast.LENGTH_SHORT).show()
+                    positiveMessage("Dados salvos com sucesso!")
                     val intent = Intent(this, TrainingRegistrationActivity::class.java)
-                    intent.putStringArrayListExtra("academias", ArrayList(nomesAcademias))
-                    if (quantidadeTreinos != null) {
-                        intent.putExtra("quantidadeTreinos", quantidadeTreinos.toInt())
+                    intent.putStringArrayListExtra("academias", ArrayList(gymsName))
+                    if (trainingQuantity != null) {
+                        intent.putExtra("quantidadeTreinos", trainingQuantity.toInt())
                     }
                     startActivity(intent)
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(this, "Erro ao salvar: ${e.message}", Toast.LENGTH_SHORT).show()
+                    negativeMessage("Erro ao salvar: ${e.message}")
                 }
 
         } else {
-            Toast.makeText(this, "Usuário não autenticado", Toast.LENGTH_SHORT).show()
+            negativeMessage("Usuário não autenticado")
         }
     }
 
     fun Int.dpToPx(): Int {
         return (this * resources.displayMetrics.density).toInt()
+    }
+
+    private fun negativeMessage(msg: String) {
+        Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(Color.parseColor("#F3787A"))
+            .setTextColor(Color.WHITE)
+            .show()
+    }
+
+    private fun positiveMessage(msg: String) {
+        Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(Color.parseColor("#78F37A"))
+            .setTextColor(Color.WHITE)
+            .show()
     }
 
 }

@@ -6,16 +6,10 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import br.edu.puccampinas.fitjourney.databinding.ActivityDietsBinding
 import br.edu.puccampinas.fitjourney.databinding.ActivityPhotosBinding
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
@@ -29,9 +23,8 @@ import java.util.Locale
 class PhotosActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPhotosBinding
-    private lateinit var layoutListaFotos: LinearLayout
+    private lateinit var layoutListPhotos: LinearLayout
     private val PICK_IMAGES_REQUEST = 101
-    private lateinit var imageUris: List<Uri>
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
@@ -56,17 +49,14 @@ class PhotosActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
 
-        layoutListaFotos = binding.layoutPhotos
+        layoutListPhotos = binding.layoutPhotos
         val btnUpload = binding.btnAdd
 
         btnUpload.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "image/*"
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            startActivityForResult(Intent.createChooser(intent, "Selecionar fotos"), PICK_IMAGES_REQUEST)
+            startUpload()
         }
 
-        listarFotos()
+        listPhotos()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -84,19 +74,26 @@ class PhotosActivity : AppCompatActivity() {
             }
 
             if (uris.isNotEmpty()) {
-                uploadFotos(uris)
+                photosUpload(uris)
             }
         }
     }
 
-    private fun uploadFotos(fotos: List<Uri>) {
+    private fun startUpload(){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "image/*"
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        startActivityForResult(Intent.createChooser(intent, "Selecionar fotos"), PICK_IMAGES_REQUEST)
+    }
+
+    private fun photosUpload(fotos: List<Uri>) {
         val userId = auth.currentUser?.uid ?: return
-        val dataAtual = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR")).format(Date())
+        val actualDate = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR")).format(Date())
         val urls = mutableListOf<String>()
 
         val storageRef = storage.reference.child("fotos")
         val total = fotos.size
-        var concluídas = 0
+        var finished = 0
 
         for (uri in fotos) {
             val fileRef = storageRef.child("${System.currentTimeMillis()}_${uri.lastPathSegment}")
@@ -104,20 +101,20 @@ class PhotosActivity : AppCompatActivity() {
                 .addOnSuccessListener {
                     fileRef.downloadUrl.addOnSuccessListener { url ->
                         urls.add(url.toString())
-                        concluídas++
+                        finished++
 
-                        if (concluídas == total) {
+                        if (finished == total) {
                             val info = hashMapOf(
                                 "UserId" to userId,
-                                "data" to dataAtual,
+                                "data" to actualDate,
                                 "urls" to urls
                             )
 
                             db.collection("photos")
                                 .add(info)
                                 .addOnSuccessListener {
-                                    Toast.makeText(this, "Fotos enviadas com sucesso!", Toast.LENGTH_SHORT).show()
-                                    listarFotos()
+                                    positiveMessage("Fotos enviadas com sucesso!")
+                                    listPhotos()
                                 }
                         }
                     }
@@ -125,16 +122,16 @@ class PhotosActivity : AppCompatActivity() {
         }
     }
 
-    private fun listarFotos() {
+    private fun listPhotos() {
         val userId = auth.currentUser?.uid ?: return
         db.collection("photos")
             .whereEqualTo("UserId", userId)
             .get()
             .addOnSuccessListener { documents ->
-                layoutListaFotos.removeAllViews()
+                layoutListPhotos.removeAllViews()
                 val docsList = documents.documents.reversed()
                 for (doc in docsList) {
-                    val data = doc.getString("data") ?: "Sem data"
+                    val date = doc.getString("data") ?: "Sem data"
                     val urls = doc.get("urls") as? List<*> ?: continue
 
                     val container = LinearLayout(this).apply {
@@ -149,13 +146,13 @@ class PhotosActivity : AppCompatActivity() {
                         layoutParams = params
                     }
 
-                    val titulo = TextView(this).apply {
-                        text = "Fotos de: $data"
+                    val title = TextView(this).apply {
+                        text = "Fotos de: $date"
                         textSize = 18f
                         setTextColor(Color.BLACK)
                         setTypeface(null, Typeface.BOLD)
                     }
-                    container.addView(titulo)
+                    container.addView(title)
 
                     for (url in urls) {
                         val imageView = ImageView(this).apply {
@@ -172,19 +169,19 @@ class PhotosActivity : AppCompatActivity() {
                         container.addView(imageView)
                     }
 
-                    layoutListaFotos.addView(container)
+                    layoutListPhotos.addView(container)
                 }
             }
     }
 
-    private fun mensagemNegativa(msg: String) {
+    private fun negativeMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
             .setBackgroundTint(Color.parseColor("#F3787A"))
             .setTextColor(Color.WHITE)
             .show()
     }
 
-    private fun mensagemPositiva(msg: String) {
+    private fun positiveMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
             .setBackgroundTint(Color.parseColor("#78F37A"))
             .setTextColor(Color.WHITE)

@@ -6,11 +6,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import br.edu.puccampinas.fitjourney.databinding.ActivityCreateAccountBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
@@ -36,99 +33,103 @@ class CreateAccountActivity : AppCompatActivity() {
 
         // Configuração do clique do botão de efetuar cadastro
         binding.btnCreate.setOnClickListener {
-            val email = binding.etEmail.text.toString()
-            val senha = binding.etPassword.text.toString()
-            val confirmarSenha = binding.etConfirmPassword.text.toString()
-            val nome = binding.etName.text.toString()
+            validateAndCreateUser()
+        }
+    }
 
-            // Verificação dos campos obrigatórios e das regras de validação
-            when {
-                nome.isEmpty() -> {
-                    mensagemNegativa(it, "Preencha seu nome")
-                }
-                email.isEmpty() -> {
-                    mensagemNegativa(it, "Preencha seu email")
-                }
-                senha.isEmpty() -> {
-                    mensagemNegativa(it, "Preencha sua senha")
-                }
-                senha.length < 6 -> {
-                    mensagemNegativa(it, "A senha precisa ter pelo menos seis caracteres")
-                }
-                senha != confirmarSenha -> {
-                    mensagemNegativa(it, "As senhas não coincidem")
-                }
-                else -> {
-                    // Verifica se o email já está em uso
-                    db.collection("user")
-                        .whereEqualTo("email", email)
-                        .get()
-                        .addOnSuccessListener { pessoas ->
-                            var contaJaExiste = false
+    private fun validateAndCreateUser(){
+        val email = binding.etEmail.text.toString()
+        val password = binding.etPassword.text.toString()
+        val confirmPassword = binding.etConfirmPassword.text.toString()
+        val name = binding.etName.text.toString()
 
-                            pessoas.forEach { pessoa ->
-                                if (pessoa.getString("email") == email) {
-                                    contaJaExiste = true
-                                    return@forEach
-                                }
+        // Verificação dos campos obrigatórios e das regras de validação
+        when {
+            name.isEmpty() -> {
+                negativeMessage(binding.root, "Preencha seu nome")
+            }
+            email.isEmpty() -> {
+                negativeMessage(binding.root, "Preencha seu email")
+            }
+            password.isEmpty() -> {
+                negativeMessage(binding.root, "Preencha sua senha")
+            }
+            password.length < 6 -> {
+                negativeMessage(binding.root, "A senha precisa ter pelo menos seis caracteres")
+            }
+            password != confirmPassword -> {
+                negativeMessage(binding.root, "As senhas não coincidem")
+            }
+            else -> {
+                // Verifica se o email já está em uso
+                db.collection("user")
+                    .whereEqualTo("email", email)
+                    .get()
+                    .addOnSuccessListener { people ->
+                        var accountAlreadyExists = false
+
+                        people.forEach { person ->
+                            if (person.getString("email") == email) {
+                                accountAlreadyExists = true
+                                return@forEach
                             }
+                        }
 
-                            if (contaJaExiste) {
-                                mensagemNegativa(it, "O email fornecido já está em uso")
-                            } else {
-                                // Criação da conta no Firebase Auth
-                                auth.createUserWithEmailAndPassword(email, senha)
-                                    .addOnCompleteListener { task ->
-                                        if (task.isSuccessful) {
-                                            // Salva os dados no Firestore
-                                            salvarDadosNoFirestore(nome, email, senha)
-                                            auth.signInWithEmailAndPassword(email, senha)
-                                                .addOnCompleteListener(this) { task ->
-                                                    if (task.isSuccessful) {
-                                                        // Se o login for bem-sucedido, vai para a tela principal do cliente
-                                                        Log.d(ContentValues.TAG, "signInWithEmail:success")
+                        if (accountAlreadyExists) {
+                            negativeMessage(binding.root, "O email fornecido já está em uso")
+                        } else {
+                            // Criação da conta no Firebase Auth
+                            auth.createUserWithEmailAndPassword(email, password)
+                                .addOnCompleteListener { task ->
+                                    if (task.isSuccessful) {
+                                        // Salva os dados no Firestore
+                                        saveDataInFrestore(name, email, password)
+                                        auth.signInWithEmailAndPassword(email, password)
+                                            .addOnCompleteListener(this) { task ->
+                                                if (task.isSuccessful) {
+                                                    // Se o login for bem-sucedido, vai para a tela principal do cliente
+                                                    Log.d(ContentValues.TAG, "signInWithEmail:success")
 
-                                                        val user = auth.currentUser
-                                                        val userId = user?.uid
+                                                    val user = auth.currentUser
+                                                    val userId = user?.uid
 
-                                                        val userDocRef = FirebaseFirestore.getInstance().collection("pessoa").document(userId!!)
-                                                        userDocRef.get().addOnSuccessListener { documentSnapshot ->
-                                                            if (documentSnapshot.exists()) {
-                                                                startActivity(Intent(this, MenuActivity::class.java))
-                                                            }
+                                                    val userDocRef = FirebaseFirestore.getInstance().collection("pessoa").document(userId!!)
+                                                    userDocRef.get().addOnSuccessListener { documentSnapshot ->
+                                                        if (documentSnapshot.exists()) {
+                                                            startActivity(Intent(this, MenuActivity::class.java))
                                                         }
-                                                    } else {
-                                                        // Se o login falhar, exibe uma mensagem de erro
-                                                        Log.w(ContentValues.TAG, "signInWithEmail:failure", task.exception)
-                                                        mensagemNegativa(binding.root, "Falha na autenticação, tente novamente")
                                                     }
-                                                    this.finish()
+                                                } else {
+                                                    // Se o login falhar, exibe uma mensagem de erro
+                                                    Log.w(ContentValues.TAG, "signInWithEmail:failure", task.exception)
+                                                    negativeMessage(binding.root, "Falha na autenticação, tente novamente")
                                                 }
-                                        } else {
-                                            Log.w(ContentValues.TAG, "createUserWithEmail:failure", task.exception)
-                                            mensagemNegativa(binding.root, "Falha na criação da conta: ${task.exception?.message}")
-                                        }
+                                                this.finish()
+                                            }
+                                    } else {
+                                        Log.w(ContentValues.TAG, "createUserWithEmail:failure", task.exception)
+                                        negativeMessage(binding.root, "Falha na criação da conta: ${task.exception?.message}")
                                     }
-                                    .addOnFailureListener { exception ->
-                                        Log.w(ContentValues.TAG, "createUserWithEmail:failure", exception)
-                                        mensagemNegativa(binding.root, "Falha na criação da conta: ${exception.message}")
-                                    }
-                            }
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.w(ContentValues.TAG, "createUserWithEmail:failure", exception)
+                                    negativeMessage(binding.root, "Falha na criação da conta: ${exception.message}")
+                                }
                         }
-                        .addOnFailureListener { exception ->
-                            Log.w(ContentValues.TAG, "Firestore query failed", exception)
-                            mensagemNegativa(binding.root, "Erro ao verificar o email: ${exception.message}")
-                        }
-                }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w(ContentValues.TAG, "Firestore query failed", exception)
+                        negativeMessage(binding.root, "Erro ao verificar o email: ${exception.message}")
+                    }
             }
         }
     }
 
-    private fun salvarDadosNoFirestore(nome: String,email: String, senha: String) {
+    private fun saveDataInFrestore(name: String,email: String, password: String) {
         val pessoaMap = hashMapOf(
-            "nome" to nome,
+            "nome" to name,
             "email" to email,
-            "senha" to senha,
+            "senha" to password,
         )
 
         val user = FirebaseAuth.getInstance().currentUser
@@ -136,26 +137,22 @@ class CreateAccountActivity : AppCompatActivity() {
             db.collection("user").document(it.uid)
                 .set(pessoaMap)
                 .addOnSuccessListener {
-                    mensagemPositiva(binding.root, "Bem-vindo")
+                    positiveMessage(binding.root, "Bem-vindo")
                 }
                 .addOnFailureListener { e ->
-                    Toast.makeText(
-                        baseContext,
-                        "Erro ao enviar dados: $e",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    positiveMessage(binding.root,"Erro ao enviar dados: $e")
                 }
         }
     }
 
-    private fun mensagemNegativa(view: View, mensagem: String) {
+    private fun negativeMessage(view: View, mensagem: String) {
         val snackbar = Snackbar.make(view, mensagem, Snackbar.LENGTH_LONG)
         snackbar.setBackgroundTint(Color.parseColor("#F3787A"))
         snackbar.setTextColor(Color.parseColor("#FFFFFF"))
         snackbar.show()
     }
 
-    private fun mensagemPositiva(view: View, mensagem: String) {
+    private fun positiveMessage(view: View, mensagem: String) {
         val snackbar = Snackbar.make(view, mensagem, Snackbar.LENGTH_LONG)
         snackbar.setBackgroundTint(Color.parseColor("#78F37A"))
         snackbar.setTextColor(Color.parseColor("#FFFFFF"))

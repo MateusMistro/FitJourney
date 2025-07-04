@@ -20,7 +20,7 @@ import java.util.*
 class AnthropometricAssessmentActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAnthropometricAssessmentBinding
-    private lateinit var layoutAvaliacoes: LinearLayout
+    private lateinit var layoutEvaluatios: LinearLayout
     private val PICK_FILES_REQUEST = 102
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
@@ -37,20 +37,21 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
 
-        layoutAvaliacoes = binding.layoutEvaluations
+        layoutEvaluatios = binding.layoutEvaluations
 
-        binding.comeBack.setOnClickListener { finish() }
-        binding.menu.setOnClickListener { goToMenu() }
-
-        binding.btnAdd.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "*/*"
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "application/pdf"))
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            startActivityForResult(Intent.createChooser(intent, "Selecionar arquivos"), PICK_FILES_REQUEST)
+        binding.comeBack.setOnClickListener {
+            finish()
         }
 
-        listarAvaliacoes()
+        binding.menu.setOnClickListener {
+            goToMenu()
+        }
+
+        binding.btnAdd.setOnClickListener {
+            startUpload()
+        }
+
+        listReviews()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -65,60 +66,68 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
                 uris.add(it)
             }
             if (uris.isNotEmpty()) {
-                uploadArquivos(uris)
+                uploadFiles(uris)
             }
         }
     }
 
-    private fun uploadArquivos(arquivos: List<Uri>) {
+    private fun startUpload(){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "*/*"
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, arrayOf("image/*", "application/pdf"))
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        startActivityForResult(Intent.createChooser(intent, "Selecionar arquivos"), PICK_FILES_REQUEST)
+    }
+
+    private fun uploadFiles(files: List<Uri>) {
         val userId = auth.currentUser?.uid ?: return
-        val dataAtual = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR")).format(Date())
+        val actualDate = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR")).format(Date())
         val urls = mutableListOf<String>()
 
         val storageRef = storage.reference.child("avaliacoes")
-        val total = arquivos.size
-        var concluidos = 0
+        val total = files.size
+        var finished = 0
 
-        for (uri in arquivos) {
-            val nomeArquivo = "${System.currentTimeMillis()}_${uri.lastPathSegment}"
-            val fileRef = storageRef.child(nomeArquivo)
+        for (uri in files) {
+            val fileName = "${System.currentTimeMillis()}_${uri.lastPathSegment}"
+            val fileRef = storageRef.child(fileName)
 
             fileRef.putFile(uri).addOnSuccessListener {
                 fileRef.downloadUrl.addOnSuccessListener { url ->
                     urls.add(url.toString())
-                    concluidos++
+                    finished++
 
-                    if (concluidos == total) {
-                        val dados = hashMapOf(
+                    if (finished == total) {
+                        val data = hashMapOf(
                             "UserId" to userId,
-                            "data" to dataAtual,
+                            "data" to actualDate,
                             "urls" to urls
                         )
                         db.collection("anthropometricAssessments")
-                            .add(dados)
+                            .add(data)
                             .addOnSuccessListener {
-                                mensagemPositiva("Arquivos enviados com sucesso!")
-                                listarAvaliacoes()
+                                positiveMessage("Arquivos enviados com sucesso!")
+                                listReviews()
                             }
                     }
                 }
             }.addOnFailureListener {
-                mensagemNegativa("Erro ao enviar arquivos.")
+                negativeMessage("Erro ao enviar arquivos.")
             }
         }
     }
 
-    private fun listarAvaliacoes() {
+    private fun listReviews() {
         val userId = auth.currentUser?.uid ?: return
         db.collection("anthropometricAssessments")
             .whereEqualTo("UserId", userId)
             .get()
             .addOnSuccessListener { documents ->
-                layoutAvaliacoes.removeAllViews()
+                layoutEvaluatios.removeAllViews()
                 val docsList = documents.documents.reversed()
 
                 for (doc in docsList) {
-                    val data = doc.getString("data") ?: "Sem data"
+                    val date = doc.getString("data") ?: "Sem data"
                     val urls = doc.get("urls") as? List<*> ?: continue
 
                     val container = LinearLayout(this).apply {
@@ -133,19 +142,19 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
                         layoutParams = params
                     }
 
-                    val titulo = TextView(this).apply {
-                        text = "Avaliação de: $data"
+                    val title = TextView(this).apply {
+                        text = "Avaliação de: $date"
                         textSize = 18f
                         setTextColor(Color.BLACK)
                         setTypeface(null, Typeface.BOLD)
                     }
-                    container.addView(titulo)
+                    container.addView(title)
 
                     for (url in urls) {
                         val urlStr = url.toString()
-                        val nomeArquivo = Uri.parse(urlStr).lastPathSegment ?: ""
-                        if (nomeArquivo.contains(".pdf", ignoreCase = true)) {
-                            val botaoPdf = TextView(this).apply {
+                        val fileName = Uri.parse(urlStr).lastPathSegment ?: ""
+                        if (fileName.contains(".pdf", ignoreCase = true)) {
+                            val buttonPdf = TextView(this).apply {
                                 text = "Ver PDF"
                                 setTextColor(Color.BLUE)
                                 textSize = 16f
@@ -158,14 +167,14 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
                                 }
                             }
 
-                            val dataTexto = TextView(this).apply {
-                                text = "Enviado em: $data"
+                            val textDate = TextView(this).apply {
+                                text = "Enviado em: $date"
                                 textSize = 16f
                                 setTextColor(Color.DKGRAY)
                             }
 
-                            container.addView(dataTexto)
-                            container.addView(botaoPdf)
+                            container.addView(textDate)
+                            container.addView(buttonPdf)
                         }
                         else {
                             val imageView = ImageView(this).apply {
@@ -183,19 +192,19 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
                         }
                     }
 
-                    layoutAvaliacoes.addView(container)
+                    layoutEvaluatios.addView(container)
                 }
             }
     }
 
-    private fun mensagemNegativa(msg: String) {
+    private fun negativeMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
             .setBackgroundTint(Color.parseColor("#F3787A"))
             .setTextColor(Color.WHITE)
             .show()
     }
 
-    private fun mensagemPositiva(msg: String) {
+    private fun positiveMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
             .setBackgroundTint(Color.parseColor("#78F37A"))
             .setTextColor(Color.WHITE)

@@ -1,13 +1,11 @@
 package br.edu.puccampinas.fitjourney
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import br.edu.puccampinas.fitjourney.databinding.ActivityGeneralRegistrationBinding
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
@@ -16,6 +14,9 @@ private lateinit var db: FirebaseFirestore
 private lateinit var auth: FirebaseAuth
 
 class GeneralRegistrationActivity : AppCompatActivity() {
+    private var trainingQuantity: String = ""
+    private var gymsQuantity: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding =  ActivityGeneralRegistrationBinding.inflate(layoutInflater)
@@ -25,29 +26,11 @@ class GeneralRegistrationActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
 
         binding.comeBack.setOnClickListener {
-            startActivity(Intent(this,MenuActivity::class.java))
-            finish()
+            comeBack()
         }
 
         binding.btnSave.setOnClickListener {
-            val quantidadeTreinos = binding.Training.text.toString()
-            val quantidadeAcademias = binding.Gyms.text.toString()
-
-            val treinosNumero = quantidadeTreinos.toIntOrNull()
-            val academiasNumero = quantidadeAcademias.toIntOrNull()
-
-            if (quantidadeTreinos.isNotEmpty() && quantidadeAcademias.isNotEmpty()) {
-                if (treinosNumero != null && academiasNumero != null) {
-                    val intent = Intent(this, GymsNameActivity::class.java)
-                    intent.putExtra("quantidadeTreinos", quantidadeTreinos)
-                    intent.putExtra("quantidadeAcademias", quantidadeAcademias)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(this, "Insira apenas números válidos!", Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(this, "Preencha todos os campos", Toast.LENGTH_SHORT).show()
-            }
+            saveData()
         }
 
         binding.menu.setOnClickListener {
@@ -55,8 +38,52 @@ class GeneralRegistrationActivity : AppCompatActivity() {
         }
     }
 
+    private fun saveData(){
+        trainingQuantity = binding.Training.text.toString()
+        gymsQuantity = binding.Gyms.text.toString()
+
+        val trainingNumber = trainingQuantity.toIntOrNull()
+        val gymsNumber = gymsQuantity.toIntOrNull()
+
+        if (trainingQuantity.isNotEmpty() && gymsQuantity.isNotEmpty()) {
+            if (trainingNumber != null && gymsNumber != null) {
+                goToNextActivity()
+            } else {
+                negativeMessage("Insira apenas números válidos!")
+            }
+        } else {
+            negativeMessage("Preencha todos os campos")
+        }
+    }
+
     private fun goToMenu(){
         startActivity(Intent(this,MenuActivity::class.java))
         finish()
+    }
+
+    private fun negativeMessage(msg: String) {
+        Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(Color.parseColor("#F3787A"))
+            .setTextColor(Color.WHITE)
+            .show()
+    }
+
+    private fun positiveMessage(msg: String) {
+        Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(Color.parseColor("#78F37A"))
+            .setTextColor(Color.WHITE)
+            .show()
+    }
+
+    private fun comeBack(){
+        startActivity(Intent(this,MenuActivity::class.java))
+        finish()
+    }
+
+    private fun goToNextActivity(){
+        val intent = Intent(this, GymsNameActivity::class.java)
+        intent.putExtra("quantidadeTreinos", trainingQuantity)
+        intent.putExtra("quantidadeAcademias", gymsQuantity)
+        startActivity(intent)
     }
 }

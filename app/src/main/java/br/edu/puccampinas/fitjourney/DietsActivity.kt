@@ -7,13 +7,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import br.edu.puccampinas.fitjourney.databinding.ActivityDietsBinding
-import br.edu.puccampinas.fitjourney.databinding.ActivityMenuBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,7 +29,7 @@ class DietsActivity : AppCompatActivity() {
         binding = ActivityDietsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        listarPDFs()
+        listPDFs()
 
         binding.comeBack.setOnClickListener {
             finish()
@@ -44,9 +40,7 @@ class DietsActivity : AppCompatActivity() {
         }
 
         binding.btnAdd.setOnClickListener {
-            val intent = Intent(Intent.ACTION_GET_CONTENT)
-            intent.type = "application/pdf"
-            startActivityForResult(intent, PICK_PDF_REQUEST)
+            startUpload()
         }
     }
 
@@ -59,6 +53,12 @@ class DietsActivity : AppCompatActivity() {
         }
     }
 
+    fun startUpload(){
+        val intent = Intent(Intent.ACTION_GET_CONTENT)
+        intent.type = "application/pdf"
+        startActivityForResult(intent, PICK_PDF_REQUEST)
+    }
+
     fun uploadPDF(uri: Uri) {
         val storageRef = FirebaseStorage.getInstance().reference
         val fileName = "pdfs/${System.currentTimeMillis()}.pdf"
@@ -68,35 +68,35 @@ class DietsActivity : AppCompatActivity() {
             .addOnSuccessListener {
                 fileRef.downloadUrl.addOnSuccessListener { url ->
 
-                    val fileNameOriginal = getFileNameFromUri(uri)
-                    val dataAtual = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR")).format(Date())
+                    val originalFileName = getFileNameFromUri(uri)
+                    val actualDate = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR")).format(Date())
                     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "sem_usuario"
 
                     // Salva metadados no Firestore na coleção "diets"
                     val pdfInfo = hashMapOf(
-                        "nome" to fileNameOriginal,
+                        "nome" to originalFileName,
                         "url" to url.toString(),
                         "UserId" to userId,
-                        "data" to dataAtual
+                        "data" to actualDate
                     )
 
                     FirebaseFirestore.getInstance().collection("diets")
                         .add(pdfInfo)
                         .addOnSuccessListener {
-                            Toast.makeText(this, "PDF enviado com sucesso!", Toast.LENGTH_SHORT).show()
-                            listarPDFs()
+                            positiveMessage("PDF enviado com sucesso!")
+                            listPDFs()
                         }
                         .addOnFailureListener {
-                            Toast.makeText(this, "Falha ao salvar metadados", Toast.LENGTH_SHORT).show()
+                            negativeMessage("Falha ao salvar metadados")
                         }
                 }
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Falha ao enviar PDF", Toast.LENGTH_SHORT).show()
+                negativeMessage("Falha ao enviar PDF")
             }
     }
 
-    fun listarPDFs() {
+    fun listPDFs() {
         val pdfList = mutableListOf<Triple<String, String, String>>() // nome, url, data
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
@@ -106,24 +106,24 @@ class DietsActivity : AppCompatActivity() {
             .addOnSuccessListener { documents ->
                 val docsList = documents.documents.reversed()
                 for (doc in docsList) {
-                    val nome = doc.getString("nome") ?: "Sem nome"
+                    val name = doc.getString("nome") ?: "Sem nome"
                     val url = doc.getString("url") ?: ""
-                    val data = doc.getString("data") ?: "Data desconhecida"
-                    pdfList.add(Triple(nome, url, data))
+                    val date = doc.getString("data") ?: "Data desconhecida"
+                    pdfList.add(Triple(name, url, date))
                 }
 
-                mostrarListaPDFs(pdfList)
+                showPDFsList(pdfList)
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Erro ao carregar PDFs", Toast.LENGTH_SHORT).show()
+               negativeMessage("Erro ao carregar PDF")
             }
     }
 
-    fun mostrarListaPDFs(lista: List<Triple<String, String, String>>) {
+    fun showPDFsList(list: List<Triple<String, String, String>>) {
         val layout = binding.layoutDiets
         layout.removeAllViews()
 
-        for ((nome, url, data) in lista) {
+        for ((name, url, date) in list) {
             // Card container
             val card = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
@@ -139,22 +139,22 @@ class DietsActivity : AppCompatActivity() {
             }
 
             // Nome do PDF
-            val titulo = TextView(this).apply {
-                text = nome
+            val title = TextView(this).apply {
+                text = name
                 textSize = 18f
                 setTextColor(Color.BLACK)
                 setTypeface(null, android.graphics.Typeface.BOLD)
             }
 
             // Data
-            val dataTexto = TextView(this).apply {
-                text = "Enviado em: $data"
+            val textDate = TextView(this).apply {
+                text = "Enviado em: $date"
                 textSize = 16f
                 setTextColor(Color.DKGRAY)
             }
 
             // Botão "Ver PDF"
-            val botao = TextView(this).apply {
+            val button = TextView(this).apply {
                 text = "Ver PDF"
                 setTextColor(Color.BLUE)
                 setPadding(0, 16, 0, 0)
@@ -168,9 +168,9 @@ class DietsActivity : AppCompatActivity() {
             }
 
             // Adiciona todos ao card
-            card.addView(titulo)
-            card.addView(dataTexto)
-            card.addView(botao)
+            card.addView(title)
+            card.addView(textDate)
+            card.addView(button)
 
             // Adiciona o card à lista
             layout.addView(card)
@@ -189,14 +189,14 @@ class DietsActivity : AppCompatActivity() {
     }
 
 
-    private fun mensagemNegativa(msg: String) {
+    private fun negativeMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
             .setBackgroundTint(Color.parseColor("#F3787A"))
             .setTextColor(Color.WHITE)
             .show()
     }
 
-    private fun mensagemPositiva(msg: String) {
+    private fun positiveMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
             .setBackgroundTint(Color.parseColor("#78F37A"))
             .setTextColor(Color.WHITE)
