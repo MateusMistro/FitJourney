@@ -21,7 +21,7 @@ import java.util.Locale
 class DietsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDietsBinding
-    val PICK_PDF_REQUEST = 1
+    val PICK_PDF_REQUEST = 1 // Código para identificar retorno da seleção de PDF
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,16 +44,17 @@ class DietsActivity : AppCompatActivity() {
         }
     }
 
-    // Resultado do PDF escolhido
+    // Trata o retorno da escolha do arquivo PDF
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_PDF_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
-            val pdfUri = data.data
-            pdfUri?.let { uploadPDF(it) }
+            val pdfUri = data.data // URI do arquivo escolhido
+            pdfUri?.let { uploadPDF(it) } // Faz upload se não for nulo
         }
     }
 
-    fun startUpload(){
+    // Abre seletor de arquivos para PDF
+    fun startUpload() {
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "application/pdf"
         startActivityForResult(intent, PICK_PDF_REQUEST)
@@ -66,13 +67,12 @@ class DietsActivity : AppCompatActivity() {
 
         fileRef.putFile(uri)
             .addOnSuccessListener {
+                // Obtém URL de download após upload
                 fileRef.downloadUrl.addOnSuccessListener { url ->
-
                     val originalFileName = getFileNameFromUri(uri)
                     val actualDate = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR")).format(Date())
                     val userId = FirebaseAuth.getInstance().currentUser?.uid ?: "sem_usuario"
 
-                    // Salva metadados no Firestore na coleção "diets"
                     val pdfInfo = hashMapOf(
                         "nome" to originalFileName,
                         "url" to url.toString(),
@@ -84,7 +84,7 @@ class DietsActivity : AppCompatActivity() {
                         .add(pdfInfo)
                         .addOnSuccessListener {
                             positiveMessage("PDF enviado com sucesso!")
-                            listPDFs()
+                            listPDFs() // Recarrega a lista
                         }
                         .addOnFailureListener {
                             negativeMessage("Falha ao salvar metadados")
@@ -96,15 +96,16 @@ class DietsActivity : AppCompatActivity() {
             }
     }
 
+    // Lista os PDFs enviados pelo usuário atual
     fun listPDFs() {
-        val pdfList = mutableListOf<Triple<String, String, String>>() // nome, url, data
+        val pdfList = mutableListOf<Triple<String, String, String>>() // Lista com nome, url e data
         val userId = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
         FirebaseFirestore.getInstance().collection("diets")
-            .whereEqualTo("UserId", userId) // só PDFs do usuário atual
+            .whereEqualTo("UserId", userId)
             .get()
             .addOnSuccessListener { documents ->
-                val docsList = documents.documents.reversed()
+                val docsList = documents.documents.reversed() // Mostra do mais recente ao mais antigo
                 for (doc in docsList) {
                     val name = doc.getString("nome") ?: "Sem nome"
                     val url = doc.getString("url") ?: ""
@@ -115,16 +116,16 @@ class DietsActivity : AppCompatActivity() {
                 showPDFsList(pdfList)
             }
             .addOnFailureListener {
-               negativeMessage("Erro ao carregar PDF")
+                negativeMessage("Erro ao carregar PDF")
             }
     }
 
     fun showPDFsList(list: List<Triple<String, String, String>>) {
         val layout = binding.layoutDiets
-        layout.removeAllViews()
+        layout.removeAllViews() // Limpa visualizações antigas
 
         for ((name, url, date) in list) {
-            // Card container
+            // Cria container estilo card
             val card = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
                 setPadding(24, 24, 24, 24)
@@ -134,11 +135,10 @@ class DietsActivity : AppCompatActivity() {
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
-                params.setMargins(0, 24, 0, 60) // espaço entre cards
+                params.setMargins(0, 24, 0, 60)
                 layoutParams = params
             }
 
-            // Nome do PDF
             val title = TextView(this).apply {
                 text = name
                 textSize = 18f
@@ -146,14 +146,12 @@ class DietsActivity : AppCompatActivity() {
                 setTypeface(null, android.graphics.Typeface.BOLD)
             }
 
-            // Data
             val textDate = TextView(this).apply {
                 text = "Enviado em: $date"
                 textSize = 16f
                 setTextColor(Color.DKGRAY)
             }
 
-            // Botão "Ver PDF"
             val button = TextView(this).apply {
                 text = "Ver PDF"
                 setTextColor(Color.BLUE)
@@ -167,7 +165,7 @@ class DietsActivity : AppCompatActivity() {
                 }
             }
 
-            // Adiciona todos ao card
+            // Adiciona os elementos ao card
             card.addView(title)
             card.addView(textDate)
             card.addView(button)
@@ -177,6 +175,7 @@ class DietsActivity : AppCompatActivity() {
         }
     }
 
+    // Obtém o nome do arquivo PDF a partir da URI
     fun getFileNameFromUri(uri: Uri): String {
         var name = "PDF"
         contentResolver.query(uri, null, null, null, null)?.use { cursor ->
@@ -187,7 +186,6 @@ class DietsActivity : AppCompatActivity() {
         }
         return name
     }
-
 
     private fun negativeMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
@@ -203,8 +201,8 @@ class DietsActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun goToMenu(){
-        startActivity(Intent(this,MenuActivity::class.java))
+    private fun goToMenu() {
+        startActivity(Intent(this, MenuActivity::class.java))
         finish()
     }
 }

@@ -7,6 +7,7 @@ import android.text.InputType
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.puccampinas.fitjourney.databinding.ActivityTrainingDetailBinding
 import com.google.android.material.snackbar.Snackbar
@@ -19,10 +20,14 @@ class TrainingDetailActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
     private lateinit var docId: String
-    private val exercicesFild = mutableListOf<Triple<String, EditText, EditText>>() // nome, peso, reps
+
+    // Lista de triples: nome do exercício, campo peso e campo repetições
+    private val exercisesFields = mutableListOf<Triple<String, EditText, EditText>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
         binding = ActivityTrainingDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -33,10 +38,10 @@ class TrainingDetailActivity : AppCompatActivity() {
         val gym = intent.getStringExtra("academia")
         val trainingLetter = intent.getStringExtra("treino")
 
-        binding.trainingTv.text = "Treino " + trainingLetter
+        binding.trainingTv.text = "Treino $trainingLetter"
 
         if (userId == null || gym == null || trainingLetter == null) {
-            negativeMessage("Dados insuficientes.")
+            showNegativeMessage("Dados insuficientes.")
             finish()
             return
         }
@@ -51,21 +56,23 @@ class TrainingDetailActivity : AppCompatActivity() {
                     val doc = docs.first()
                     docId = doc.id
 
-                    val list = doc.get("exercicios") as? List<Map<String, Any>>
-                    list?.forEach { exerciceMap ->
-                        val name = exerciceMap["nome"].toString()
-                        val weight = (exerciceMap["peso"] as Long).toInt()
-                        val reps = (exerciceMap["repeticoes"] as Long).toInt()
-                        createFildExercicies(name, weight, reps)
+                    val exercisesList = doc.get("exercicios") as? List<Map<String, Any>>
+                    exercisesList?.forEach { exerciseMap ->
+                        val name = exerciseMap["nome"].toString()
+                        val weight = (exerciseMap["peso"] as? Long)?.toInt() ?: 0
+                        val reps = (exerciseMap["repeticoes"] as? Long)?.toInt() ?: 0
+                        createExerciseField(name, weight, reps)
                     }
-
                 } else {
-                    negativeMessage("Treino não encontrado.")
+                    showNegativeMessage("Treino não encontrado.")
                 }
+            }
+            .addOnFailureListener { e ->
+                showNegativeMessage("Erro ao buscar treino: ${e.message}")
             }
 
         binding.btnSave.setOnClickListener {
-            save()
+            saveExercises()
         }
 
         binding.comeBack.setOnClickListener {
@@ -77,7 +84,7 @@ class TrainingDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun createFildExercicies(name: String, weight: Int, reps: Int) {
+    private fun createExerciseField(name: String, weight: Int, reps: Int) {
         val context = this
 
         val container = LinearLayout(context).apply {
@@ -89,7 +96,7 @@ class TrainingDetailActivity : AppCompatActivity() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             )
-            params.setMargins(0, 24, 0, 60) // Espaço entre os cartões
+            params.setMargins(0, 24, 0, 60)
             layoutParams = params
         }
 
@@ -101,104 +108,103 @@ class TrainingDetailActivity : AppCompatActivity() {
         }
 
         val weightInput = EditText(context).apply {
-            hint = "Peso(kg):"
-            setHint("Peso(kg): " + weight.toString())
+            hint = "Peso (kg): $weight"
             inputType = InputType.TYPE_CLASS_NUMBER
+            setText(weight.toString())
         }
 
         val repsInput = EditText(context).apply {
-            hint = "Repetições:"
-            setHint("Repetições: " + reps.toString())
+            hint = "Repetições: $reps"
             inputType = InputType.TYPE_CLASS_NUMBER
+            setText(reps.toString())
         }
 
-        exercicesFild.add(Triple(name, weightInput, repsInput))
+        // Guarda referência dos campos para salvar depois
+        exercisesFields.add(Triple(name, weightInput, repsInput))
 
-        // Adiciona os elementos ao container do exercício
         container.addView(title)
         container.addView(weightInput)
         container.addView(repsInput)
 
-        // Adiciona o container ao layout principal
         binding.layoutExercises.addView(container)
     }
 
-    private fun save() {
-        db.collection("trainings")
-            .document(docId)
+    private fun saveExercises() {
+        db.collection("trainings").document(docId)
             .get()
             .addOnSuccessListener { document ->
-                val originalExercices = document.get("exercicios") as? List<Map<String, Any>> ?: return@addOnSuccessListener
+                val originalExercises = document.get("exercicios") as? List<Map<String, Any>>
+                if (originalExercises == null) {
+                    showNegativeMessage("Dados originais do treino não encontrados.")
+                    return@addOnSuccessListener
+                }
 
-                val newExercices = mutableListOf<Map<String, Any>>()
+                val updatedExercises = mutableListOf<Map<String, Any>>()
 
-                for ((index, triple) in exercicesFild.withIndex()) {
+                for ((index, triple) in exercisesFields.withIndex()) {
                     val name = triple.first
                     val weightStr = triple.second.text.toString().trim()
                     val repsStr = triple.third.text.toString().trim()
 
-                    // Verificação se os campos estão preenchidos
                     if (weightStr.isEmpty() || repsStr.isEmpty()) {
-                        negativeMessage("Preencha todos os campos de peso e repetições.")
+                        showNegativeMessage("Preencha todos os campos de peso e repetições.")
                         return@addOnSuccessListener
                     }
 
-                    // Verificação se são números válidos
                     val newWeight = weightStr.toIntOrNull()
                     val newReps = repsStr.toIntOrNull()
 
                     if (newWeight == null || newReps == null) {
-                        negativeMessage("Insira apenas números válidos.")
+                        showNegativeMessage("Insira apenas números válidos.")
                         return@addOnSuccessListener
                     }
 
-                    val original = originalExercices.getOrNull(index)
+                    val original = originalExercises.getOrNull(index)
                     val oldWeight = (original?.get("peso") as? Long)?.toInt() ?: 0
                     val oldReps = (original?.get("repeticoes") as? Long)?.toInt() ?: 0
 
-                    val shouldActualize = newWeight > oldWeight ||
-                            (newWeight == oldWeight && newReps > oldReps)
+                    // Atualiza apenas se o novo peso ou repetições forem melhores
+                    val shouldUpdate = newWeight > oldWeight || (newWeight == oldWeight && newReps > oldReps)
 
-                    val finalExercice = if (shouldActualize) {
+                    val finalExercise = if (shouldUpdate) {
                         mapOf("nome" to name, "peso" to newWeight, "repeticoes" to newReps)
                     } else {
                         mapOf("nome" to name, "peso" to oldWeight, "repeticoes" to oldReps)
                     }
 
-                    newExercices.add(finalExercice)
+                    updatedExercises.add(finalExercise)
                 }
 
-                db.collection("trainings")
-                    .document(docId)
-                    .update("exercicios", newExercices)
+                db.collection("trainings").document(docId)
+                    .update("exercicios", updatedExercises)
                     .addOnSuccessListener {
-                        positiveMessage("Exercícios atualizados com sucesso.")
+                        showPositiveMessage("Exercícios atualizados com sucesso.")
                     }
-                    .addOnFailureListener {
-                        negativeMessage("Erro ao atualizar exercícios: ${it.message}")
+                    .addOnFailureListener { e ->
+                        showNegativeMessage("Erro ao atualizar exercícios: ${e.message}")
                     }
             }
-            .addOnFailureListener {
-                negativeMessage("Erro ao buscar treino atual: ${it.message}")
+            .addOnFailureListener { e ->
+                showNegativeMessage("Erro ao buscar treino atual: ${e.message}")
             }
     }
 
-    private fun negativeMessage(msg: String) {
+    private fun showNegativeMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
             .setBackgroundTint(Color.parseColor("#F3787A"))
             .setTextColor(Color.WHITE)
             .show()
     }
 
-    private fun positiveMessage(msg: String) {
+    private fun showPositiveMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
             .setBackgroundTint(Color.parseColor("#78F37A"))
             .setTextColor(Color.WHITE)
             .show()
     }
 
-    private fun goToMenu(){
-        startActivity(Intent(this,MenuActivity::class.java))
+    private fun goToMenu() {
+        startActivity(Intent(this, MenuActivity::class.java))
         finish()
     }
 }

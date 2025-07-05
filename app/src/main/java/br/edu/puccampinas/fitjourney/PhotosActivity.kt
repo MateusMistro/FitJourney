@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.puccampinas.fitjourney.databinding.ActivityPhotosBinding
 import com.bumptech.glide.Glide
@@ -23,14 +24,21 @@ import java.util.Locale
 class PhotosActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPhotosBinding
+
     private lateinit var layoutListPhotos: LinearLayout
+
+    // Código para identificar a ação de escolha de imagens no Intent
     private val PICK_IMAGES_REQUEST = 101
+
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Ativa o edge-to-edge para layout moderno
+        enableEdgeToEdge()
 
         supportActionBar?.hide()
 
@@ -50,8 +58,8 @@ class PhotosActivity : AppCompatActivity() {
         storage = FirebaseStorage.getInstance()
 
         layoutListPhotos = binding.layoutPhotos
-        val btnUpload = binding.btnAdd
 
+        val btnUpload = binding.btnAdd
         btnUpload.setOnClickListener {
             startUpload()
         }
@@ -59,12 +67,14 @@ class PhotosActivity : AppCompatActivity() {
         listPhotos()
     }
 
+    // Recebe o resultado da seleção de imagens
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGES_REQUEST && resultCode == Activity.RESULT_OK) {
             val uris = mutableListOf<Uri>()
 
+            // Permite selecionar múltiplas imagens (clipData) ou apenas uma (data)
             data?.clipData?.let { clip ->
                 for (i in 0 until clip.itemCount) {
                     uris.add(clip.getItemAt(i).uri)
@@ -79,10 +89,11 @@ class PhotosActivity : AppCompatActivity() {
         }
     }
 
+    // Abre a galeria para selecionar uma ou várias imagens
     private fun startUpload(){
         val intent = Intent(Intent.ACTION_GET_CONTENT)
-        intent.type = "image/*"
-        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        intent.type = "image/*" // Tipos aceitos: imagens
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true) // Permite múltipla seleção
         startActivityForResult(Intent.createChooser(intent, "Selecionar fotos"), PICK_IMAGES_REQUEST)
     }
 
@@ -129,11 +140,13 @@ class PhotosActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 layoutListPhotos.removeAllViews()
-                val docsList = documents.documents.reversed()
+
+                val docsList = documents.documents.reversed() // Inverte para mostrar as mais recentes primeiro
                 for (doc in docsList) {
                     val date = doc.getString("data") ?: "Sem data"
                     val urls = doc.get("urls") as? List<*> ?: continue
 
+                    // Container para agrupar fotos e data
                     val container = LinearLayout(this).apply {
                         orientation = LinearLayout.VERTICAL
                         setPadding(16, 16, 16, 16)
@@ -160,6 +173,7 @@ class PhotosActivity : AppCompatActivity() {
                             setPadding(0, 8, 0, 8)
                             scaleType = ImageView.ScaleType.CENTER_CROP
                             setOnClickListener {
+                                // Ao clicar, abre em tela cheia passando a url da imagem
                                 val intent = Intent(this@PhotosActivity, PhotoFullScreenActivity::class.java)
                                 intent.putExtra("imageUrl", url.toString())
                                 startActivity(intent)
@@ -169,7 +183,7 @@ class PhotosActivity : AppCompatActivity() {
                         container.addView(imageView)
                     }
 
-                    layoutListPhotos.addView(container)
+                    layoutListPhotos.addView(container) // Adiciona container com fotos à lista
                 }
             }
     }

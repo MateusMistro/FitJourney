@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import br.edu.puccampinas.fitjourney.databinding.ActivityTrainingRegistrationBinding
@@ -13,34 +14,44 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
-private lateinit var binding: ActivityTrainingRegistrationBinding
-private lateinit var db: FirebaseFirestore
-private lateinit var auth: FirebaseAuth
-
-private var gyms = listOf<String>()
-private var trainingQuantity = 0
-
-private var actualGym = 0
-private var actualWorkout = 0
-
-private val exercicesList = mutableListOf<Triple<EditText, EditText, EditText>>()
-
 class TrainingRegistrationActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityTrainingRegistrationBinding
+    private lateinit var db: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
+
+    private var gyms = listOf<String>()
+    private var trainingQuantity = 0
+
+    private var actualGym = 0
+    private var actualWorkout = 0
+
+    // Lista de triples que guardam os campos: nome, peso e repetições
+    private val exercisesList = mutableListOf<Triple<EditText, EditText, EditText>>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+
         binding = ActivityTrainingRegistrationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
-        gyms = intent.getStringArrayListExtra("academias") ?: listOf()
+        gyms = intent.getStringArrayListExtra("academias") ?: emptyList()
         trainingQuantity = intent.getIntExtra("quantidadeTreinos", 0)
 
-        setUpScreen()
+        if (gyms.isEmpty() || trainingQuantity <= 0) {
+            showNegativeMessage("Dados de academias ou quantidade de treinos inválidos.")
+            finish()
+            return
+        }
+
+        setupScreen()
 
         binding.btnAddExercise.setOnClickListener {
-            addFieldExercice()
+            addExerciseField()
         }
 
         binding.btnSaveTraining.setOnClickListener {
@@ -48,14 +59,14 @@ class TrainingRegistrationActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpScreen() {
+    private fun setupScreen() {
         binding.txtTitle.text = "Academia: ${gyms[actualGym]} - Treino ${'A' + actualWorkout}"
         binding.layoutExercises.removeAllViews()
-        exercicesList.clear()
-        addFieldExercice() // Começa com pelo menos um
+        exercisesList.clear()
+        addExerciseField() // Começa com pelo menos um campo de exercício
     }
 
-    private fun addFieldExercice() {
+    private fun addExerciseField() {
         val horizontalLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER
@@ -69,7 +80,6 @@ class TrainingRegistrationActivity : AppCompatActivity() {
             }
         }
 
-        // Campo Nome do Exercício
         val editName = EditText(this).apply {
             hint = "Ex: Supino"
             layoutParams = LinearLayout.LayoutParams(0, 50.dpToPx(), 2f).apply {
@@ -81,7 +91,6 @@ class TrainingRegistrationActivity : AppCompatActivity() {
             setHintTextColor(ContextCompat.getColor(context, R.color.black))
         }
 
-        // Campo Peso
         val editWeight = EditText(this).apply {
             hint = "Peso(Kg)"
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
@@ -94,7 +103,6 @@ class TrainingRegistrationActivity : AppCompatActivity() {
             setHintTextColor(ContextCompat.getColor(context, R.color.black))
         }
 
-        // Campo Repetições
         val editReps = EditText(this).apply {
             hint = "Reps"
             inputType = android.text.InputType.TYPE_CLASS_NUMBER
@@ -105,14 +113,13 @@ class TrainingRegistrationActivity : AppCompatActivity() {
             setHintTextColor(ContextCompat.getColor(context, R.color.black))
         }
 
-        // Adiciona no layout horizontal
         horizontalLayout.addView(editName)
         horizontalLayout.addView(editWeight)
         horizontalLayout.addView(editReps)
 
         binding.layoutExercises.addView(horizontalLayout)
 
-        exercicesList.add(Triple(editName, editWeight, editReps))
+        exercisesList.add(Triple(editName, editWeight, editReps))
     }
 
     private fun saveTraining() {
@@ -120,43 +127,41 @@ class TrainingRegistrationActivity : AppCompatActivity() {
         val userId = currentUser?.uid
 
         if (userId == null) {
-            negativeMessage("Usuário não autenticado")
+            showNegativeMessage("Usuário não autenticado")
             return
         }
 
-        val listOfExercices = mutableListOf<Map<String, Any>>()
+        val exercisesData = mutableListOf<Map<String, Any>>()
 
-        for ((index, triple) in exercicesList.withIndex()) {
+        for ((index, triple) in exercisesList.withIndex()) {
             val name = triple.first.text.toString().trim()
             val weightStr = triple.second.text.toString().trim()
             val repsStr = triple.third.text.toString().trim()
 
-            // Verifica se todos os campos estão preenchidos
             if (name.isEmpty() || weightStr.isEmpty() || repsStr.isEmpty()) {
-                negativeMessage("Preencha todos os campos do exercício ${index + 1}")
+                showNegativeMessage("Preencha todos os campos do exercício ${index + 1}")
                 return
             }
 
-            // Converte peso e repetições em número
-            val weigth = weightStr.toIntOrNull()
-            val repetitions = repsStr.toIntOrNull()
+            val weight = weightStr.toIntOrNull()
+            val reps = repsStr.toIntOrNull()
 
-            if (weigth == null || repetitions == null || weigth <= 0 || repetitions <= 0) {
-                negativeMessage("Insira valores válidos (números maiores que zero) no exercício ${index + 1}")
+            if (weight == null || reps == null || weight <= 0 || reps <= 0) {
+                showNegativeMessage("Valores inválidos no exercício ${index + 1}. Use números maiores que zero.")
                 return
             }
 
-            listOfExercices.add(
+            exercisesData.add(
                 mapOf(
                     "nome" to name,
-                    "peso" to weigth,
-                    "repeticoes" to repetitions
+                    "peso" to weight,
+                    "repeticoes" to reps
                 )
             )
         }
 
-        if (listOfExercices.isEmpty()) {
-            negativeMessage("Adicione pelo menos um exercício")
+        if (exercisesData.isEmpty()) {
+            showNegativeMessage("Adicione pelo menos um exercício.")
             return
         }
 
@@ -164,52 +169,50 @@ class TrainingRegistrationActivity : AppCompatActivity() {
             "userId" to userId,
             "academia" to gyms[actualGym],
             "letraTreino" to ('A' + actualWorkout).toString(),
-            "exercicios" to listOfExercices
+            "exercicios" to exercisesData
         )
 
         db.collection("trainings")
             .add(trainingData)
             .addOnSuccessListener {
-                positiveMessage("Treino salvo com sucesso")
+                showPositiveMessage("Treino salvo com sucesso!")
                 advanceTrainingOrGym()
             }
             .addOnFailureListener { e ->
-                negativeMessage("Erro ao salvar treino: ${e.message}")
+                showNegativeMessage("Erro ao salvar treino: ${e.message}")
             }
     }
 
     private fun advanceTrainingOrGym() {
         if (actualWorkout < trainingQuantity - 1) {
             actualWorkout++
-            setUpScreen()
         } else if (actualGym < gyms.size - 1) {
             actualWorkout = 0
             actualGym++
-            setUpScreen()
         } else {
-            positiveMessage("Todos os treinos cadastrados!")
+            showPositiveMessage("Todos os treinos cadastrados!")
             val intent = Intent(this, MenuActivity::class.java)
             startActivity(intent)
+            finish()
+            return
         }
+        setupScreen()
     }
 
-    // Converte dp para px
-    fun Int.dpToPx(): Int {
-        return (this * resources.displayMetrics.density).toInt()
-    }
+    // Extensão para conversão dp -> px
+    private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
 
-    private fun negativeMessage(msg: String) {
+    private fun showNegativeMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
             .setBackgroundTint(Color.parseColor("#F3787A"))
             .setTextColor(Color.WHITE)
             .show()
     }
 
-    private fun positiveMessage(msg: String) {
+    private fun showPositiveMessage(msg: String) {
         Snackbar.make(binding.root, msg, Snackbar.LENGTH_LONG)
             .setBackgroundTint(Color.parseColor("#78F37A"))
             .setTextColor(Color.WHITE)
             .show()
     }
-
 }

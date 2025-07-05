@@ -3,6 +3,7 @@ package br.edu.puccampinas.fitjourney
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.puccampinas.fitjourney.databinding.ActivityGeneralRegistrationBinding
 import com.google.android.material.snackbar.Snackbar
@@ -14,12 +15,15 @@ private lateinit var db: FirebaseFirestore
 private lateinit var auth: FirebaseAuth
 
 class GeneralRegistrationActivity : AppCompatActivity() {
+
     private var trainingQuantity: String = ""
     private var gymsQuantity: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding =  ActivityGeneralRegistrationBinding.inflate(layoutInflater)
+        enableEdgeToEdge() // Permite que o layout vá até a borda da tela
+
+        binding = ActivityGeneralRegistrationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
@@ -38,13 +42,15 @@ class GeneralRegistrationActivity : AppCompatActivity() {
         }
     }
 
-    private fun saveData(){
+    private fun saveData() {
         trainingQuantity = binding.Training.text.toString()
         gymsQuantity = binding.Gyms.text.toString()
 
+        // Tenta converter os valores para inteiro
         val trainingNumber = trainingQuantity.toIntOrNull()
         val gymsNumber = gymsQuantity.toIntOrNull()
 
+        // Verifica se os campos foram preenchidos
         if (trainingQuantity.isNotEmpty() && gymsQuantity.isNotEmpty()) {
             if (trainingNumber != null && gymsNumber != null) {
                 goToNextActivity()
@@ -56,8 +62,8 @@ class GeneralRegistrationActivity : AppCompatActivity() {
         }
     }
 
-    private fun goToMenu(){
-        startActivity(Intent(this,MenuActivity::class.java))
+    private fun goToMenu() {
+        startActivity(Intent(this, MenuActivity::class.java))
         finish()
     }
 
@@ -75,12 +81,12 @@ class GeneralRegistrationActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun comeBack(){
-        startActivity(Intent(this,MenuActivity::class.java))
+    private fun comeBack() {
+        startActivity(Intent(this, MenuActivity::class.java))
         finish()
     }
 
-    private fun goToNextActivity(){
+    private fun goToNextActivity() {
         val intent = Intent(this, GymsNameActivity::class.java)
         intent.putExtra("quantidadeTreinos", trainingQuantity)
         intent.putExtra("quantidadeAcademias", gymsQuantity)

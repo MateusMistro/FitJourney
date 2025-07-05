@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.widget.EditText
 import android.widget.LinearLayout
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import br.edu.puccampinas.fitjourney.databinding.ActivityGymsNameBinding
@@ -22,6 +23,7 @@ class GymsNameActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         binding = ActivityGymsNameBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -29,37 +31,38 @@ class GymsNameActivity : AppCompatActivity() {
         db = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
 
+        // Recupera as quantidades de treinos e academias vindas da tela anterior
         val trainingQuantity = intent.getStringExtra("quantidadeTreinos")
         val gymsQuantity = intent.getStringExtra("quantidadeAcademias")
         val gymsNumber = gymsQuantity?.toIntOrNull() ?: 0
         val layout = binding.Gyms
 
+        // Cria dinamicamente campos EditText para cada academia
         for (i in 1..gymsNumber) {
             val editText = EditText(this)
             editText.hint = "Nome da academia $i"
 
-            // Define o tamanho e centraliza
+            // Define tamanho e alinhamento
             val params = LinearLayout.LayoutParams(
-                resources.getDimensionPixelSize(R.dimen.edittext_width), // 350dp
-                resources.getDimensionPixelSize(R.dimen.edittext_height) // 50dp
+                resources.getDimensionPixelSize(R.dimen.edittext_width),  // Ex: 350dp
+                resources.getDimensionPixelSize(R.dimen.edittext_height)  // Ex: 50dp
             )
-            params.topMargin = resources.getDimensionPixelSize(R.dimen.edittext_margin_top) // margem superior
-            params.gravity = Gravity.CENTER // centraliza no LinearLayout
+            params.topMargin = resources.getDimensionPixelSize(R.dimen.edittext_margin_top)
+            params.gravity = Gravity.CENTER
 
             editText.layoutParams = params
 
-            // Outras configurações visuais
+            // Estilo visual
             editText.setBackgroundResource(R.drawable.borda)
-            editText.setPadding(15.dpToPx(), 0, 0, 0) // padding left de 15dp
+            editText.setPadding(15.dpToPx(), 0, 0, 0)
             editText.setTextColor(ContextCompat.getColor(this, R.color.black))
             editText.setHintTextColor(ContextCompat.getColor(this, R.color.black))
 
-            // Adiciona na tela e na lista
+            // Adiciona ao layout da tela e à lista de inputs
             layout.addView(editText)
             editTextList.add(editText)
         }
 
-        // Clique no botão salvar
         binding.btnSave.setOnClickListener {
             val filledFields = editTextList.all { it.text.toString().trim().isNotEmpty() }
 
@@ -70,7 +73,6 @@ class GymsNameActivity : AppCompatActivity() {
 
             saveDataInFirestore(trainingQuantity)
         }
-
     }
 
     private fun saveDataInFirestore(trainingQuantity: String?) {
@@ -80,29 +82,27 @@ class GymsNameActivity : AppCompatActivity() {
         if (userId != null) {
             val gymsName = editTextList.map { it.text.toString().trim() }
 
-            // Verifica se algum campo está vazio
+            // Valida se há campos vazios
             val someEmptyField = gymsName.any { it.isEmpty() }
             if (someEmptyField) {
                 negativeMessage("Preencha todos os nomes das academias")
                 return
             }
 
-            // Monta o mapa de dados
             val gymData = hashMapOf<String, Any>(
                 "UserId" to userId
             )
 
-            // Adiciona os campos academia1, academia2, etc.
             for ((index, name) in gymsName.withIndex()) {
                 val key = "academia${index + 1}"
                 gymData[key] = name
             }
 
-            // Salva no Firestore
             db.collection("gyms")
                 .add(gymData)
                 .addOnSuccessListener {
                     positiveMessage("Dados salvos com sucesso!")
+
                     val intent = Intent(this, TrainingRegistrationActivity::class.java)
                     intent.putStringArrayListExtra("academias", ArrayList(gymsName))
                     if (trainingQuantity != null) {
@@ -113,12 +113,12 @@ class GymsNameActivity : AppCompatActivity() {
                 .addOnFailureListener { e ->
                     negativeMessage("Erro ao salvar: ${e.message}")
                 }
-
         } else {
             negativeMessage("Usuário não autenticado")
         }
     }
 
+    // Função para converter dp em pixels
     fun Int.dpToPx(): Int {
         return (this * resources.displayMetrics.density).toInt()
     }
@@ -136,5 +136,4 @@ class GymsNameActivity : AppCompatActivity() {
             .setTextColor(Color.WHITE)
             .show()
     }
-
 }

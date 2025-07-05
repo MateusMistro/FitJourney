@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.widget.*
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import br.edu.puccampinas.fitjourney.databinding.ActivityAnthropometricAssessmentBinding
 import com.bumptech.glide.Glide
@@ -21,22 +22,28 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAnthropometricAssessmentBinding
     private lateinit var layoutEvaluatios: LinearLayout
+
+    // Código de requisição para identificar retorno da seleção de arquivos
     private val PICK_FILES_REQUEST = 102
+
     private lateinit var auth: FirebaseAuth
     private lateinit var db: FirebaseFirestore
     private lateinit var storage: FirebaseStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
+        enableEdgeToEdge()
+        supportActionBar?.hide() // Oculta a ActionBar
 
         binding = ActivityAnthropometricAssessmentBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Inicialização do Firebase
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         storage = FirebaseStorage.getInstance()
 
+        // Referência ao layout onde as avaliações serão listadas
         layoutEvaluatios = binding.layoutEvaluations
 
         binding.comeBack.setOnClickListener {
@@ -47,30 +54,39 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
             goToMenu()
         }
 
+        // Botão para adicionar (selecionar) arquivos
         binding.btnAdd.setOnClickListener {
             startUpload()
         }
 
+        // Lista avaliações ao abrir a tela
         listReviews()
     }
 
+    // Trata o retorno da seleção de arquivos
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PICK_FILES_REQUEST && resultCode == Activity.RESULT_OK) {
             val uris = mutableListOf<Uri>()
+
+            // Verifica se múltiplos arquivos foram selecionados
             data?.clipData?.let { clip ->
                 for (i in 0 until clip.itemCount) {
                     uris.add(clip.getItemAt(i).uri)
                 }
             } ?: data?.data?.let {
+                // Caso apenas um arquivo seja selecionado
                 uris.add(it)
             }
+
+            // Envia os arquivos selecionados
             if (uris.isNotEmpty()) {
                 uploadFiles(uris)
             }
         }
     }
 
+    // Inicia seleção de arquivos (imagens ou PDFs)
     private fun startUpload(){
         val intent = Intent(Intent.ACTION_GET_CONTENT)
         intent.type = "*/*"
@@ -79,6 +95,7 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
         startActivityForResult(Intent.createChooser(intent, "Selecionar arquivos"), PICK_FILES_REQUEST)
     }
 
+    // Faz upload dos arquivos selecionados para o Firebase Storage e salva URLs no Firestore
     private fun uploadFiles(files: List<Uri>) {
         val userId = auth.currentUser?.uid ?: return
         val actualDate = SimpleDateFormat("dd/MM/yyyy", Locale("pt", "BR")).format(Date())
@@ -92,7 +109,9 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
             val fileName = "${System.currentTimeMillis()}_${uri.lastPathSegment}"
             val fileRef = storageRef.child(fileName)
 
+            // Faz upload do arquivo
             fileRef.putFile(uri).addOnSuccessListener {
+                // Obtém a URL de download após upload
                 fileRef.downloadUrl.addOnSuccessListener { url ->
                     urls.add(url.toString())
                     finished++
@@ -117,19 +136,22 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
         }
     }
 
+    // Lista todas as avaliações já enviadas pelo usuário atual
     private fun listReviews() {
         val userId = auth.currentUser?.uid ?: return
+
         db.collection("anthropometricAssessments")
             .whereEqualTo("UserId", userId)
             .get()
             .addOnSuccessListener { documents ->
-                layoutEvaluatios.removeAllViews()
-                val docsList = documents.documents.reversed()
+                layoutEvaluatios.removeAllViews() // Limpa layout antes de listar
+                val docsList = documents.documents.reversed() // Lista em ordem decrescente
 
                 for (doc in docsList) {
                     val date = doc.getString("data") ?: "Sem data"
                     val urls = doc.get("urls") as? List<*> ?: continue
 
+                    // Container visual de uma avaliação
                     val container = LinearLayout(this).apply {
                         orientation = LinearLayout.VERTICAL
                         setPadding(16, 16, 16, 16)
@@ -153,7 +175,9 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
                     for (url in urls) {
                         val urlStr = url.toString()
                         val fileName = Uri.parse(urlStr).lastPathSegment ?: ""
+
                         if (fileName.contains(".pdf", ignoreCase = true)) {
+                            // Se for PDF, exibe botão de visualização
                             val buttonPdf = TextView(this).apply {
                                 text = "Ver PDF"
                                 setTextColor(Color.BLUE)
@@ -175,8 +199,8 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
 
                             container.addView(textDate)
                             container.addView(buttonPdf)
-                        }
-                        else {
+                        } else {
+                            // Se for imagem, exibe na tela com Glide
                             val imageView = ImageView(this).apply {
                                 layoutParams = LinearLayout.LayoutParams(500, 500)
                                 setPadding(0, 8, 0, 8)

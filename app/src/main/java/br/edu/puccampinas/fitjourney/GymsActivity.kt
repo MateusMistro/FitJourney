@@ -19,9 +19,11 @@ private lateinit var db: FirebaseFirestore
 private lateinit var auth: FirebaseAuth
 
 class GymsActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         binding = ActivityGymsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -39,6 +41,7 @@ class GymsActivity : AppCompatActivity() {
         }
     }
 
+    // Função para buscar academias do usuário autenticado no Firestore
     private fun loadUserGyms() {
         val userId = auth.currentUser?.uid
 
@@ -49,7 +52,6 @@ class GymsActivity : AppCompatActivity() {
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
                         for (document in documents) {
-                            // Percorre os campos academia1, academia2, etc.
                             document.data.forEach { (key, value) ->
                                 if (key.startsWith("academia")) {
                                     val gymName = value.toString()
@@ -69,19 +71,21 @@ class GymsActivity : AppCompatActivity() {
         }
     }
 
+    // Cria dinamicamente um botão para cada academia cadastrada
     private fun createGymButton(gymName: String) {
         val button = Button(this).apply {
-            text = gymName
-            setBackgroundResource(R.drawable.borda)
+            text = gymName // Nome da academia no texto do botão
+            setBackgroundResource(R.drawable.borda) // Aplica uma borda personalizada
             backgroundTintList = ContextCompat.getColorStateList(context, R.color.corPrincipal)
             setTextColor(ContextCompat.getColor(context, R.color.black))
             textSize = 25f
 
+            // Define tamanho e margem do botão
             val params = LinearLayout.LayoutParams(
                 300.dpToPx(),
                 55.dpToPx()
             ).apply {
-                topMargin = 70.dpToPx() // ou 150.dpToPx() se for o primeiro botão
+                topMargin = 70.dpToPx() // margem superior
                 gravity = Gravity.CENTER_HORIZONTAL
             }
             layoutParams = params
@@ -93,15 +97,17 @@ class GymsActivity : AppCompatActivity() {
             }
         }
 
+        // Adiciona o botão ao layout da tela
         binding.layoutButtons.addView(button)
     }
 
+    // Extensão para converter dp em pixels
     private fun Int.dpToPx(): Int {
         return (this * resources.displayMetrics.density).toInt()
     }
 
-    private fun goToMenu(){
-        startActivity(Intent(this,MenuActivity::class.java))
+    private fun goToMenu() {
+        startActivity(Intent(this, MenuActivity::class.java))
         finish()
     }
 
@@ -119,9 +125,8 @@ class GymsActivity : AppCompatActivity() {
             .show()
     }
 
-    private fun comeBack(){
-        startActivity(Intent(this,MenuActivity::class.java))
+    private fun comeBack() {
+        startActivity(Intent(this, MenuActivity::class.java))
         finish()
     }
-
 }

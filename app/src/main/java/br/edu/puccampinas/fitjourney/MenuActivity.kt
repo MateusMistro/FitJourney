@@ -58,24 +58,24 @@ class MenuActivity : AppCompatActivity() {
 
     private fun negativeMessage(view: View, mensagem: String) {
         val snackbar = Snackbar.make(view, mensagem, Snackbar.LENGTH_LONG)
-        snackbar.setBackgroundTint(Color.parseColor("#F3787A"))
+        snackbar.setBackgroundTint(Color.parseColor("#F3787A")) // vermelho
         snackbar.setTextColor(Color.parseColor("#FFFFFF"))
         snackbar.show()
     }
 
     private fun positiveMessage(view: View, mensagem: String) {
         val snackbar = Snackbar.make(view, mensagem, Snackbar.LENGTH_LONG)
-        snackbar.setBackgroundTint(Color.parseColor("#78F37A"))
+        snackbar.setBackgroundTint(Color.parseColor("#78F37A")) // verde
         snackbar.setTextColor(Color.parseColor("#FFFFFF"))
         snackbar.show()
     }
 
-    private fun goToMenu(){
-        startActivity(Intent(this,MenuActivity::class.java))
+    private fun goToMenu() {
+        startActivity(Intent(this, MenuActivity::class.java))
         finish()
     }
 
-    private fun logout(){
+    private fun logout() {
         val user = FirebaseAuth.getInstance().currentUser
         user?.let {
             auth.signOut()
@@ -84,37 +84,40 @@ class MenuActivity : AppCompatActivity() {
         }
     }
 
-    private fun goToDiets(){
-        startActivity(Intent(this,DietsActivity::class.java))
+    private fun goToDiets() {
+        startActivity(Intent(this, DietsActivity::class.java))
     }
 
-    private fun goToPhotos(){
-        startActivity(Intent(this,PhotosActivity::class.java))
+    private fun goToPhotos() {
+        startActivity(Intent(this, PhotosActivity::class.java))
     }
 
-    private fun goToAnthropometricAssessment(){
-        startActivity(Intent(this,AnthropometricAssessmentActivity::class.java))
+    private fun goToAnthropometricAssessment() {
+        startActivity(Intent(this, AnthropometricAssessmentActivity::class.java))
     }
 
-    private fun goToTraining(){
+    private fun goToTraining() {
         if (userId != null) {
+            // Verifica se o usuário já tem treinos registrados
             db.collection("trainings")
                 .whereEqualTo("userId", userId)
                 .get()
                 .addOnSuccessListener { documents ->
                     if (!documents.isEmpty) {
+                        // Se já tiver treinos, vai direto para a tela de academias
                         val intent = Intent(this, GymsActivity::class.java)
                         startActivity(intent)
                     } else {
+                        // Se não tiver, direciona para o cadastro de academias e treinos
                         val intent = Intent(this, GeneralRegistrationActivity::class.java)
                         startActivity(intent)
                     }
                 }
                 .addOnFailureListener { exception ->
-                    negativeMessage(binding.root,"Erro ao acessar dados: ${exception.message}")
+                    negativeMessage(binding.root, "Erro ao acessar dados: ${exception.message}")
                 }
         } else {
-            negativeMessage(binding.root,"Usuário não autenticado")
+            negativeMessage(binding.root, "Usuário não autenticado")
         }
     }
 }
