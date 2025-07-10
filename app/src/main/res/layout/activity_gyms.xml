@@ -12,13 +12,14 @@
         android:background="@color/corPrincipal">
 
         <ImageView
-            android:id="@+id/btnVoltar"
+            android:id="@+id/comeBack"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/img_voltar"
             android:layout_gravity="center"/>
 
         <ImageView
+            android:id="@+id/menu"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -27,27 +28,29 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btnSantaFe"
-        android:layout_width="300dp"
-        android:layout_height="55dp"
-        android:background="@drawable/borda"
-        android:backgroundTint="@color/corPrincipal"
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/selecione_academia"
+        android:textSize="30dp"
+        android:textColor="@color/black"
         android:layout_gravity="center"
-        android:layout_marginTop="150dp"
-        android:text="santa fé"
-        android:textSize="25dp"/>
+        android:layout_marginTop="30dp"/>
 
-    <Button
-        android:id="@+id/btnForcaBruta"
-        android:layout_width="300dp"
-        android:layout_height="55dp"
-        android:background="@drawable/borda"
-        android:backgroundTint="@color/corPrincipal"
-        android:layout_gravity="center"
-        android:layout_marginTop="70dp"
-        android:text="Força bruta"
-        android:textSize="25dp"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingHorizontal="24dp"
+        android:layout_marginTop="25dp">
 
+        <LinearLayout
+            android:id="@+id/layoutButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp"/>
+    </ScrollView>
 
 </LinearLayout>

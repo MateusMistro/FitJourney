@@ -1,3 +1,39 @@
 <resources>
     <string name="app_name">FitJourney</string>
+    <string name="avaliações_antropométricas">Avaliações antropométricas</string>
+    <string name="adicionar_avaliacoes">Adicionar avaliações</string>
+    <string name="FitJourney">FitJourney</string>
+    <string name="crie_sua_conta">Crie sua conta</string>
+    <string name="nome">Nome</string>
+    <string name="email">Email</string>
+    <string name="senha">Senha</string>
+    <string name="confirmar_senha">Confirmar Senha</string>
+    <string name="clique_login">clique aqui para fazer login</string>
+    <string name="criar_conta">Criar Conta</string>
+    <string name="dietas">Dietas</string>
+    <string name="adicionar_dieta">Adicionar nova dieta</string>
+    <string name="faca_registro">Faça seu registro</string>
+    <string name="quantos_treinos">Quantos treinos você possui?</string>
+    <string name="ex_5">Ex: 5</string>
+    <string name="quantas_academias">Quantas academias você frequenta?</string>
+    <string name="ex_2">Ex: 2</string>
+    <string name="avancar">Avançar</string>
+    <string name="selecione_academia">Selecione uma academia</string>
+    <string name="qual_nome_academia">Qual o nome da(s) academia(s)</string>
+    <string name="faca_login">Faça Login</string>
+    <string name="clique_para_criar">clique aqui para criar uma conta</string>
+    <string name="treinos">Treinos</string>
+    <string name="avaliacao_antropometrica_n">avaliação\nantropométrica</string>
+    <string name="fotos">Fotos</string>
+    <string name="adicionar_fotos">Adicionar novas fotos</string>
+    <string name="editar_treino">Editar treino</string>
+    <string name="salvar_alteracoes">Salvar alterações</string>
+    <string name="academia_treino_A">Academia: - Treino A</string>
+    <string name="adicionar_exercicio">Adicionar Exercício</string>
+    <string name="salvar_treino">Salvar Treino</string>
+    <string name="selecione_um_treino">Selecione um teino</string>
+    <string name="entrar">Entrar</string>
+
+
+
 </resources>

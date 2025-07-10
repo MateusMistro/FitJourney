@@ -2,6 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -13,25 +19,34 @@
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
-            android:name=".TreinoEActivity"
+            android:name=".AnthropometricAssessmentActivity"
             android:exported="false" />
         <activity
-            android:name=".TreinoDActivity"
+            android:name=".PhotoFullScreenActivity"
             android:exported="false" />
         <activity
-            android:name=".TreinoCActivity"
+            android:name=".PhotosActivity"
             android:exported="false" />
         <activity
-            android:name=".TreinoBActivity"
+            android:name=".DietsActivity"
             android:exported="false" />
         <activity
-            android:name=".AcademiasActivity"
+            android:name=".TrainingDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".TreinoAActivity"
+            android:name=".TrainingsActivity"
             android:exported="false" />
         <activity
-            android:name=".TreinosActivity"
+            android:name=".GymsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TrainingRegistrationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GymsNameActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GeneralRegistrationActivity"
             android:exported="false" />
         <activity
             android:name=".MenuActivity"
@@ -44,7 +59,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

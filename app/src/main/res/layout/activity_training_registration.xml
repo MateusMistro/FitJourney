@@ -1,0 +1,61 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:background="@color/corPrincipal"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:src="@drawable/logo_preto" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/academia_treino_A"
+        android:textSize="30dp"
+        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp" />
+
+    <LinearLayout
+        android:id="@+id/layoutExercises"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/btnAddExercise"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="@string/adicionar_exercicio"
+        android:background="@drawable/borda"
+        android:backgroundTint="@color/corPrincipal"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:textSize="16dp"/>
+
+    <Button
+        android:id="@+id/btnSaveTraining"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:text="@string/salvar_treino"
+        android:background="@drawable/borda"
+        android:backgroundTint="@color/corPrincipal"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:textSize="17dp"/>
+
+</LinearLayout>

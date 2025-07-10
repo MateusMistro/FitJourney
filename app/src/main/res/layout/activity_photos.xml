@@ -1,0 +1,70 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:background="@color/corPrincipal">
+
+        <ImageView
+            android:id="@+id/comeBack"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/img_voltar"
+            android:layout_gravity="center"/>
+
+        <ImageView
+            android:id="@+id/menu"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:src="@drawable/logo_preto"
+            android:layout_marginLeft="130dp"/>
+
+    </LinearLayout>
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/photoTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/fotos"
+        android:textSize="30dp"
+        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp" />
+
+    <!-- Conteúdo com Scroll -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingHorizontal="24dp"
+        android:layout_marginTop="25dp">
+
+        <LinearLayout
+            android:id="@+id/layoutPhotos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp"
+            />
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnAdd"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:background="@drawable/borda"
+        android:backgroundTint="@color/corPrincipal"
+        android:layout_gravity="center"
+        android:text="@string/adicionar_fotos"
+        android:textSize="14dp"
+        android:layout_marginBottom="50dp"/>
+
+</LinearLayout>

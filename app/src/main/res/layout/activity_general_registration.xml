@@ -12,13 +12,14 @@
         android:background="@color/corPrincipal">
 
         <ImageView
-            android:id="@+id/btnVoltar"
+            android:id="@+id/comeBack"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/img_voltar"
             android:layout_gravity="center"/>
 
         <ImageView
+            android:id="@+id/menu"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -27,87 +28,54 @@
 
     </LinearLayout>
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Treino D"
+        android:text="@string/faca_registro"
         android:textSize="30dp"
         android:textColor="@color/black"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/quantos_treinos"
+        android:textSize="20dp"
+        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"/>
+
     <EditText
-        android:id="@+id/Exercice1"
+        android:id="@+id/Training"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:hint="Carregando..."
+        android:hint="@string/ex_5"
         android:background="@drawable/borda"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
         android:paddingLeft="15dp"
         />
 
-    <EditText
-        android:id="@+id/Exercice2"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:hint="Carregando..."
-        android:background="@drawable/borda"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center"
-        android:textColorHint="@color/black"
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/quantas_academias"
+        android:textSize="20dp"
         android:textColor="@color/black"
-        android:paddingLeft="15dp"
-        />
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"/>
 
     <EditText
-        android:id="@+id/Exercice3"
+        android:id="@+id/Gyms"
         android:layout_width="350dp"
         android:layout_height="50dp"
-        android:hint="Carregando..."
+        android:hint="@string/ex_2"
         android:background="@drawable/borda"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center"
-        android:textColorHint="@color/black"
-        android:textColor="@color/black"
-        android:paddingLeft="15dp"
-        />
-
-    <EditText
-        android:id="@+id/Exercice4"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:hint="Carregando..."
-        android:background="@drawable/borda"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center"
-        android:textColorHint="@color/black"
-        android:textColor="@color/black"
-        android:paddingLeft="15dp"
-        />
-
-    <EditText
-        android:id="@+id/Exercice5"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:hint="Carregando..."
-        android:background="@drawable/borda"
-        android:layout_marginTop="30dp"
-        android:layout_gravity="center"
-        android:textColorHint="@color/black"
-        android:textColor="@color/black"
-        android:paddingLeft="15dp"
-        />
-
-    <EditText
-        android:id="@+id/Exercice6"
-        android:layout_width="350dp"
-        android:layout_height="50dp"
-        android:hint="Carregando..."
-        android:background="@drawable/borda"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:layout_gravity="center"
         android:textColorHint="@color/black"
         android:textColor="@color/black"
@@ -121,8 +89,8 @@
         android:background="@drawable/borda"
         android:backgroundTint="@color/corPrincipal"
         android:layout_gravity="center"
-        android:layout_marginTop="50dp"
-        android:text="Salvar"
+        android:layout_marginTop="60dp"
+        android:text="@string/avancar"
         android:textSize="25dp"/>
 
 </LinearLayout>
