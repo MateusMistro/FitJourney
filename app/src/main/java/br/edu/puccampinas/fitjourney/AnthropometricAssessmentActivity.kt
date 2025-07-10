@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 
 class AnthropometricAssessmentActivity : AppCompatActivity() {
@@ -145,8 +146,10 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
             .get()
             .addOnSuccessListener { documents ->
                 layoutEvaluatios.removeAllViews() // Limpa layout antes de listar
-                val docsList = documents.documents.reversed() // Lista em ordem decrescente
-
+                val docsList = documents.documents.sortedByDescending { doc ->
+                    val dateStr = doc.getString("data") ?: "0000-01-01"
+                    LocalDate.parse(dateStr)
+                }
                 for (doc in docsList) {
                     val date = doc.getString("data") ?: "Sem data"
                     val urls = doc.get("urls") as? List<*> ?: continue
@@ -165,7 +168,7 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
                     }
 
                     val title = TextView(this).apply {
-                        text = "Avaliação de: $date"
+                        text = "Avaliação de: ${formatDateBr(date)}"
                         textSize = 18f
                         setTextColor(Color.BLACK)
                         setTypeface(null, Typeface.BOLD)
@@ -192,7 +195,7 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
                             }
 
                             val textDate = TextView(this).apply {
-                                text = "Enviado em: $date"
+                                text = "Enviado em: ${formatDateBr(date)}"
                                 textSize = 16f
                                 setTextColor(Color.DKGRAY)
                             }
@@ -238,5 +241,16 @@ class AnthropometricAssessmentActivity : AppCompatActivity() {
     private fun goToMenu() {
         startActivity(Intent(this, MenuActivity::class.java))
         finish()
+    }
+
+    fun formatDateBr(dateString: String): String {
+        return try {
+            val parser = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // formato original
+            val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) // formato brasileiro
+            val date = parser.parse(dateString)
+            formatter.format(date!!)
+        } catch (e: Exception) {
+            dateString // retorna o original se falhar
+        }
     }
 }

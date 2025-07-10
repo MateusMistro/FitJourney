@@ -110,13 +110,13 @@ class TrainingDetailActivity : AppCompatActivity() {
         val weightInput = EditText(context).apply {
             hint = "Peso (kg): $weight"
             inputType = InputType.TYPE_CLASS_NUMBER
-            setText(weight.toString())
+            setHint(hint)
         }
 
         val repsInput = EditText(context).apply {
             hint = "Repetições: $reps"
             inputType = InputType.TYPE_CLASS_NUMBER
-            setText(reps.toString())
+            setHint(hint)
         }
 
         // Guarda referência dos campos para salvar depois

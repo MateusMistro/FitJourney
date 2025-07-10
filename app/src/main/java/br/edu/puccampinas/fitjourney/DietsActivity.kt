@@ -1,10 +1,13 @@
 package br.edu.puccampinas.fitjourney
 
 import android.app.Activity
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.Date
 import java.util.Locale
 
@@ -105,7 +109,10 @@ class DietsActivity : AppCompatActivity() {
             .whereEqualTo("UserId", userId)
             .get()
             .addOnSuccessListener { documents ->
-                val docsList = documents.documents.reversed() // Mostra do mais recente ao mais antigo
+                val docsList = documents.documents.sortedByDescending { doc ->
+                    val dateStr = doc.getString("data") ?: "0000-01-01"
+                    LocalDate.parse(dateStr)
+                }
                 for (doc in docsList) {
                     val name = doc.getString("nome") ?: "Sem nome"
                     val url = doc.getString("url") ?: ""
@@ -140,14 +147,14 @@ class DietsActivity : AppCompatActivity() {
             }
 
             val title = TextView(this).apply {
-                text = name
+                text = "Dieta de: ${formatDateBr(date)}"
                 textSize = 18f
                 setTextColor(Color.BLACK)
                 setTypeface(null, android.graphics.Typeface.BOLD)
             }
 
             val textDate = TextView(this).apply {
-                text = "Enviado em: $date"
+                text = "Enviado em: ${formatDateBr(date)}"
                 textSize = 16f
                 setTextColor(Color.DKGRAY)
             }
@@ -165,10 +172,34 @@ class DietsActivity : AppCompatActivity() {
                 }
             }
 
+            val downloadBtn = TextView(this).apply {
+                text = "Baixar PDF"
+                setTextColor(Color.BLUE)
+                setPadding(0, 8, 0, 0)
+                textSize = 16f
+                setOnClickListener {
+                    val request = DownloadManager.Request(Uri.parse(url)).apply {
+                        setTitle("Dieta de: ${formatDateBr(date)}")
+                        setDescription("Baixando dieta...")
+                        setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, name)
+                        setAllowedOverMetered(true)
+                        setAllowedOverRoaming(true)
+                    }
+
+                    val manager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    manager.enqueue(request)
+
+                    positiveMessage("Download iniciado...")
+                }
+            }
+
+
             // Adiciona os elementos ao card
             card.addView(title)
             card.addView(textDate)
             card.addView(button)
+            card.addView(downloadBtn)
 
             // Adiciona o card à lista
             layout.addView(card)
@@ -204,5 +235,16 @@ class DietsActivity : AppCompatActivity() {
     private fun goToMenu() {
         startActivity(Intent(this, MenuActivity::class.java))
         finish()
+    }
+
+    fun formatDateBr(dateString: String): String {
+        return try {
+            val parser = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // formato original
+            val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()) // formato brasileiro
+            val date = parser.parse(dateString)
+            formatter.format(date!!)
+        } catch (e: Exception) {
+            dateString // retorna o original se falhar
+        }
     }
 }

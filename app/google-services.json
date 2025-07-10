@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "328389238367",
     "project_id": "fitjourney-edabc",
-    "storage_bucket": "fitjourney-edabc.appspot.com"
+    "storage_bucket": "fitjourney-edabc.firebasestorage.app"
   },
   "client": [
     {
